@@ -1,9 +1,8 @@
 {
-    "Name": "Network",
     "ClassName": "Folder",
     "Children": [
         {
-            "Name": "TestRemote",
+            "Name": "Swap",
             "ClassName": "RemoteEvent"
         }
     ]
