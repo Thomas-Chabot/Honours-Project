@@ -27,6 +27,9 @@
       "Source": {
         "$path": "src/shared"
       },
+      "Util": {
+        "$path": "library/shared"
+      },
       "Network": {
         "$path": "network/remote/network.model.json"
       }
@@ -35,6 +38,9 @@
       "$className": "ServerScriptService",
       "Source": {
         "$path": "src/server"
+      },
+      "Util": {
+        "$path": "library/server"
       }
     },
     "ServerStorage": {
