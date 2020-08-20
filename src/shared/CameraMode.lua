@@ -1,22 +1,39 @@
 local CameraMode = { }
 
+-- Services
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local Network = ReplicatedStorage:WaitForChild("Network")
 
+-- Game Structure
+local Util = ReplicatedStorage:WaitForChild("Util")
+local Source = ReplicatedStorage:WaitForChild("Source")
+
+-- Dependencies
+local Signal = require(Util:WaitForChild("Signal"))
+local Input = require(Source:WaitForChild("Input"))
+
+-- Events
+CameraMode.Events = {
+    CameraModeChanged = Signal.new()
+}
+
+-- Constants
 local Modes = {
     "PlayerView",
     "Overhead"
 }
+
+-- Global Variables
 local currentMode = 1
 
-local cameraModeChangedEvt = Network:WaitForChild("CameraModeChanged")
-
-function CameraMode.Swap()
+-- Swaps the camera mode
+local function swapCameraMode()
     currentMode = (currentMode % #Modes) + 1
-    cameraModeChangedEvt:Fire(Modes[currentMode])
+    CameraMode.Events.CameraModeChanged:Fire(Modes[currentMode])
 end
 
-cameraModeChangedEvt.Event:Connect(function(mode)
+-- Event Connections
+Input.Events.CameraModeSwitchRequested:Connect(swapCameraMode)
+CameraMode.Events.CameraModeSwitchRequested:Connect(function(mode)
     print("The camera is now in ", mode)
 end)
 
