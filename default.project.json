@@ -31,7 +31,7 @@
         "$path": "library/shared"
       },
       "Network": {
-        "$path": "network/remote/network.model.json"
+        "$path": "network/shared/network.model.json"
       }
     },
     "ServerScriptService": {
