@@ -6,95 +6,115 @@
 local Swap = { }
 local currentParts = { }
 
+-- Game Services
 local CollectionService = game:GetService("CollectionService")
-local SwappableTag = "Swappable"
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
+-- Dependencies
+local Promise = require(ReplicatedStorage:WaitForChild("Util"):WaitForChild("Promise"))
+local BodyPosition = require(ReplicatedStorage:WaitForChild("Source"):WaitForChild("BodyPosition"))
+
+-- Constants
+local SwappableTag = "Swappable"
 local WorldHeight = 7
 
-local function waitForReachedTarget(part, target)
-    local result = Instance.new("BindableEvent")
-    spawn(function()
-        repeat
-            wait(0.1)
-        until (part.Position - target).magnitude < 0.5
+-- Animations
+-- Animates a drop. The drop method drops a part back to the ground.
+-- @tparam part BasePart A part to drop.
+-- @treturns Promise A promise that resolves once the part has reached the ground.
+local function animateDrop(part)
+    local bodyPosition = BodyPosition.GetOrCreate(part)
+    local currentPosition = bodyPosition.Position
+    local startPosition = bodyPosition:GetDefaultPosition()
 
-        result:Fire()
-    end)
-
-    return result.Event
+    return bodyPosition:MoveTo(Vector3.new(currentPosition.X, startPosition.Y, currentPosition.Z))
 end
-local function float(part, waitForResult)
-    local bodyPosition = Instance.new("BodyPosition")
-    local bodyGyro = Instance.new("BodyGyro")
 
-    local force = part:GetMass() * 500
-    bodyPosition.MaxForce = Vector3.new(force, force, force)
-    bodyGyro.MaxTorque = Vector3.new(9e9, 9e9, 9e9)
+-- Animates a swap. This takes two parts and swaps the positions of each,
+--  such that part1 will be where part2 was, and part2 will be where part1 was.
+-- @tparam part1 BasePart The first part to swap with
+-- @tparam part2 BasePart The second part to swap with
+-- @treturns Promise A Promise that will resolve once both parts have reached their targets.
+local function animateSwap(part1, part2)
+    local bp1 = BodyPosition.GetOrCreate(part1)
+    local bp2 = BodyPosition.GetOrCreate(part2)
 
-    bodyGyro.CFrame = part.CFrame
-    bodyPosition.Position = part.Position + Vector3.new(0, WorldHeight, 0)
-    
-    part.CanCollide = false
-    bodyGyro.Parent = part
-    bodyPosition.Parent = part
+    local pos1 = bp1.Position
+    local pos2 = bp2.Position
 
-    -- Note: Because this will spawn up a background thread,
-    --  only wait on the part to reach if we need to; otherwise just exit silently
-    if waitForResult then
-        return waitForReachedTarget(part, bodyPosition.Position)
-    end
+    return Promise.all({
+        bp1:MoveTo(Vector3.new(pos2.X, pos1.Y, pos2.Z)),
+        bp2:MoveTo(Vector3.new(pos1.X, pos2.Y, pos1.Z))
+    })
 end
-local function swapPositions(part1, part2)
-   local bp1 = part1:FindFirstChildOfClass("BodyPosition")
-   local bp2 = part2:FindFirstChildOfClass("BodyPosition")
-   
-   bp1.Position = Vector3.new(part2.Position.X, part1.Position.Y, part2.Position.Z)
-   bp2.Position = Vector3.new(part1.Position.X, part2.Position.Y, part1.Position.Z)
 
-   return waitForReachedTarget(part2, bp2.Position)
+-- Animates a float. The float method brings a part into the air.
+-- @tparam part BasePart The part that we want to raise into the air
+-- @tresult Promise A Promise that will resolve once the part reaches the target (i.e. is floating)
+local function animateFloat(part)
+    local bodyPosition = BodyPosition.GetOrCreate(part)
+    return bodyPosition:MoveTo(bodyPosition:GetDefaultPosition() + Vector3.new(0,WorldHeight,0))
 end
-local function fall(part, waitForResult)
-    local bp = part:FindFirstChildOfClass("BodyPosition")
-    bp.Position = bp.Position - Vector3.new(0, WorldHeight, 0)
 
-    if waitForResult then
-        return waitForReachedTarget(part, bp.Position)
-    end
-end
+-- Adds a Part into the list of parts that we're swapping with.
+-- If the part is already added into the list, it will instead be removed.
+-- This also animates the part movement, either bringing it into the air or dropping it to the ground.
+-- @tparam part BasePart The Part that we want to add into our swapping list
 function Swap.AddPart(part)
+    -- If this part can't be swapped, or if we're already running a swap operation, exit out
     if not CollectionService:HasTag(part, SwappableTag) or #currentParts >= 2 then
         return
     end
 
-    -- Add the item to our swap table
+    -- Check if the part already exists within our swapping table
     local currentPos = table.find(currentParts, part)
+
+    -- If it's already in the table: Remove it;
+    -- Otherwise add it
     if currentPos then
         table.remove(currentParts, currentPos)
     else
         table.insert(currentParts, part)
     end
-    print("Added ", part)
+
+    -- Turn off collisions for the part -- this prevents it from getting stuck on anything
+    part.CanCollide = false
 
     -- If we have two, then we want to perform the swap
     if #currentParts == 2 then
         -- Float the part
-        float(part, true):Wait()
-        swapPositions(currentParts[1], currentParts[2]):Wait()
-        fall(currentParts[1], false)
-        fall(currentParts[2], true):Wait()
+        animateFloat(part)
+            :andThen(function()
+                -- Swap the first part & the second part
+                return animateSwap(currentParts[1], currentParts[2])
+            end)
+            :andThen(function()
+                -- Drop both parts back to the ground
+                return Promise.all({
+                    animateDrop(currentParts[1]),
+                    animateDrop(currentParts[2])
+                })
+            end):andThen(function()
+                -- Reset everything
+                -- Both parts should now turn collisions back on
+                currentParts[1].CanCollide = true
+                currentParts[2].CanCollide = true
 
-        currentParts[1].CanCollide = true
-        currentParts[2].CanCollide = true
-        currentParts[1]:FindFirstChildOfClass("BodyPosition"):Destroy()
-        currentParts[2]:FindFirstChildOfClass("BodyPosition"):Destroy()
+                -- Remove the BodyPositions from each part
+                BodyPosition.GetOrCreate(currentParts[1]):Destroy()
+                BodyPosition.GetOrCreate(currentParts[2]):Destroy()
 
-        currentParts = { }
+                -- Reset the list of swapping parts
+                currentParts = { }
+            end)
     elseif currentPos then
-        fall(part, true):Wait()
-        part.CanCollide = true
-        part:FindFirstChildOfClass("BodyPosition"):Destroy()
+        -- If it's already in our list, drop it back to the ground
+        animateDrop(part):andThen(function()
+            part.CanCollide = true
+        end)
     else
-        float(part, false)
+        -- Otherwise we're adding it into our list, so bring it into the air
+        animateFloat(part, false)
     end
 end
 

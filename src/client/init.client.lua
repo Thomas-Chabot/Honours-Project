@@ -2,10 +2,14 @@
     Main control script for the client. Controls user input (i.e. the mouse).
 ]]
 
+-- Game Services
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 
+-- Game Structure
 local src = ReplicatedStorage:WaitForChild("Source")
+
+-- Load the game modules
 local Swap = require(src:WaitForChild("Swap"))
 local Recolor = require(src:WaitForChild("Recolor"))
 local Input = require(src:WaitForChild("Input"))
