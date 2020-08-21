@@ -33,7 +33,7 @@ end
 
 -- Event Connections
 Input.Events.CameraModeSwitchRequested:Connect(swapCameraMode)
-CameraMode.Events.CameraModeSwitchRequested:Connect(function(mode)
+CameraMode.Events.CameraModeChanged:Connect(function(mode)
     print("The camera is now in ", mode)
 end)
 
