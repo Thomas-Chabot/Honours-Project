@@ -1,10 +1,5 @@
 {
-    "Name": "Network",
     "ClassName": "Folder",
     "Children": [
-        {
-            "Name": "TestRemote",
-            "ClassName": "RemoteEvent"
-        }
     ]
 }
