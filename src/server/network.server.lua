@@ -9,12 +9,12 @@ function giveOwnership(instance, player)
 end
 
 local player = game.Players.PlayerAdded:Wait()
-for _,obj in pairs(CollectionService:GetTagged("Swappable")) do
+for _,obj in pairs(CollectionService:GetTagged("CanSwap")) do
     giveOwnership(obj, player)
 end
-CollectionService:GetInstanceAddedSignal("Swappable"):Connect(function(instance)
+CollectionService:GetInstanceAddedSignal("CanSwap"):Connect(function(instance)
     giveOwnership(instance, player)
 end)
-CollectionService:GetInstanceRemovedSignal("Swappable"):Connect(function(instance)
+CollectionService:GetInstanceRemovedSignal("CanSwap"):Connect(function(instance)
     giveOwnership(instance, nil)
 end)
