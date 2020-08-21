@@ -46,6 +46,12 @@ function BodyPosition.new(part)
     return self
 end
 
+-- Getter. Returns a BodyPosition attached to a Part if one already exists.
+-- If one does not exist, returns nil.
+function BodyPosition.Get(part)
+    return Instances[part]
+end
+
 -- Getter. Finds a BodyPosition attached to a Part,
 -- or creates a new one if one does not already exist.
 function BodyPosition.GetOrCreate(part)

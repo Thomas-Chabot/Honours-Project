@@ -56,6 +56,39 @@ local function animateFloat(part)
     return bodyPosition:MoveTo(bodyPosition:GetDefaultPosition() + Vector3.new(0,WorldHeight,0))
 end
 
+-- Removes a part. This performs all cleanup related to the removal of the part.
+-- @tparam part BasePart The part we want to clean up
+local function removePart(part)
+    local partIndex = table.find(currentParts, part)
+
+    -- cleans up the BodyPosition object.
+    -- runs as a function so that we can variably call it once other things are done
+    local function cleanupBodyPosition()
+        local bodyPos = BodyPosition.Get(part)
+        if bodyPos then
+            bodyPos:Destroy()
+        end
+    end
+
+
+    -- If the part is in the air, remove it
+    if partIndex then
+        -- Drop it to the ground
+        animateDrop(part):andThen(function()
+            part.CanCollide = true
+
+            -- Clean up the BodyPosition
+            cleanupBodyPosition()
+        end)
+
+        -- Remove it from our list of swapping parts
+        table.remove(currentParts, partIndex)
+    else
+        -- Clean up the BodyPosition, since we don't need to animate anything
+        cleanupBodyPosition()
+    end
+end
+
 -- Adds a Part into the list of parts that we're swapping with.
 -- If the part is already added into the list, it will instead be removed.
 -- This also animates the part movement, either bringing it into the air or dropping it to the ground.
@@ -101,8 +134,8 @@ function Swap.AddPart(part)
                 currentParts[2].CanCollide = true
 
                 -- Remove the BodyPositions from each part
-                BodyPosition.GetOrCreate(currentParts[1]):Destroy()
-                BodyPosition.GetOrCreate(currentParts[2]):Destroy()
+                BodyPosition.Get(currentParts[1]):Destroy()
+                BodyPosition.Get(currentParts[2]):Destroy()
 
                 -- Reset the list of swapping parts
                 currentParts = { }
@@ -114,8 +147,13 @@ function Swap.AddPart(part)
         end)
     else
         -- Otherwise we're adding it into our list, so bring it into the air
-        animateFloat(part, false)
+        animateFloat(part)
     end
 end
+
+-- When a part is removed from the Swappable list, clean it up
+CollectionService:GetInstanceRemovedSignal(SwappableTag):Connect(function(part)
+    removePart(part)
+end)
 
 return Swap

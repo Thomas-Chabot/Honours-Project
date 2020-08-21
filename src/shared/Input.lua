@@ -6,7 +6,6 @@
 local Input = { }
 
 -- Services
-local ContextActionService = game:GetService("ContextActionService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 -- Game Structure
