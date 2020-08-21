@@ -24,3 +24,10 @@ Input.Events.MouseClicked:Connect(function(target)
     if not target then return end
     Swap.AddPart(target)
 end)
+
+Swap.Events.SwapStarted:Connect(function()
+    Recolor.Disable()
+end)
+Swap.Events.SwapCompleted:Connect(function()
+    Recolor.Enable()
+end)

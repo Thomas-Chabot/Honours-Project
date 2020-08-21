@@ -10,13 +10,24 @@ local currentParts = { }
 local CollectionService = game:GetService("CollectionService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
+-- Game Structure
+local Util = ReplicatedStorage:WaitForChild("Util")
+local Source = ReplicatedStorage:WaitForChild("Source")
+
 -- Dependencies
-local Promise = require(ReplicatedStorage:WaitForChild("Util"):WaitForChild("Promise"))
-local BodyPosition = require(ReplicatedStorage:WaitForChild("Source"):WaitForChild("BodyPosition"))
+local Promise = require(Util:WaitForChild("Promise"))
+local Signal = require(Util:WaitForChild("Signal"))
+local BodyPosition = require(Source:WaitForChild("BodyPosition"))
 
 -- Constants
 local SwappableTag = "Swappable"
 local WorldHeight = 7
+
+-- Events
+Swap.Events = {
+    SwapStarted = Signal.new(),
+    SwapCompleted = Signal.new()
+}
 
 -- Animations
 -- Animates a drop. The drop method drops a part back to the ground.
@@ -115,6 +126,9 @@ function Swap.AddPart(part)
 
     -- If we have two, then we want to perform the swap
     if #currentParts == 2 then
+        -- Fire the SwapStarted event
+        Swap.Events.SwapStarted:Fire()
+
         -- Float the part
         animateFloat(part)
             :andThen(function()
@@ -139,6 +153,9 @@ function Swap.AddPart(part)
 
                 -- Reset the list of swapping parts
                 currentParts = { }
+
+                -- Fire the SwapCompleted event
+                Swap.Events.SwapCompleted:Fire()
             end)
     elseif currentPos then
         -- If it's already in our list, drop it back to the ground
@@ -149,6 +166,12 @@ function Swap.AddPart(part)
         -- Otherwise we're adding it into our list, so bring it into the air
         animateFloat(part)
     end
+end
+
+-- Checks if parts are currently being swapped.
+-- @treturn bool True if a swap is currently being run.
+function Swap.IsSwapping()
+    return #currentParts >= 2
 end
 
 -- When a part is removed from the Swappable list, clean it up
