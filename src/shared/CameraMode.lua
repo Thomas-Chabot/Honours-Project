@@ -31,6 +31,11 @@ local function swapCameraMode()
     CameraMode.Events.CameraModeChanged:Fire(Modes[currentMode])
 end
 
+-- Get the current camera mode
+function CameraMode.GetMode()
+    return Modes[currentMode]
+end
+
 -- Event Connections
 Input.Events.CameraModeSwitchRequested:Connect(swapCameraMode)
 CameraMode.Events.CameraModeChanged:Connect(function(mode)

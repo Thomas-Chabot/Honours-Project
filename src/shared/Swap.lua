@@ -176,6 +176,7 @@ end
 
 -- When a part is removed from the Swappable list, clean it up
 CollectionService:GetInstanceRemovedSignal(SwappableTag):Connect(function(part)
+    if Swap.IsSwapping() then return end
     removePart(part)
 end)
 
