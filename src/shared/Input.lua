@@ -44,6 +44,6 @@ mouse.Button1Down:Connect(function()
 end)
 
 -- CameraMode swap action
-ContextActionService:BindAction("CameraMode", swapCameraMode, true, Enum.KeyCode.LeftControl, Enum.KeyCode.ButtonR2)
+ContextActionService:BindAction("CameraMode", swapCameraMode, true, Enum.UserInputType.MouseButton2, Enum.KeyCode.ButtonR2)
 
 return Input

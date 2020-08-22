@@ -25,6 +25,8 @@ local function setupBodyPosition(part)
     bodyPosition.Position = part.Position
     bodyPosition.Parent = part
 
+    part.Anchored = false
+
     return bodyPosition
 end
 
@@ -109,6 +111,7 @@ end
 
 -- Cleans up the BodyPosition object & all associated instances.
 function BodyPosition:Destroy()
+    self._part.Anchored = true
     self._bodyPosition:Destroy()
     Instances[self._part] = nil
 end
