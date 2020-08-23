@@ -9,7 +9,7 @@ local Util = ReplicatedStorage:WaitForChild("Util")
 local Promise = require(Util:WaitForChild("Promise"))
 
 -- Constants
-local ForceMultiplier = 500
+local ForceMultiplier = 5000
 local Instances = { }
 
 -- Sets up a BodyPosition for the given part.

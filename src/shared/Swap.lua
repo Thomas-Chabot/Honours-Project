@@ -100,6 +100,48 @@ local function removePart(part)
     end
 end
 
+local function connectParts(part)
+    local min = part.Position - part.Size/2
+    local max = part.Position + part.Size/2
+    local region = Region3.new(Vector3.new(min.X, part.Position.Y - 20, min.Z), Vector3.new(max.X, part.Position.Y + 20, max.Z))
+    local connected = workspace:FindPartsInRegion3(region, part)
+
+    for _,connectedPart in pairs(connected) do
+        if not connectedPart.Parent then 
+            continue
+        end
+
+        local humanoid = connectedPart.Parent:FindFirstChild("Humanoid")
+        local primary = humanoid and connectedPart.Parent.PrimaryPart
+        if not humanoid or not primary or primary:FindFirstChild("Connected") then
+            continue
+        end
+        
+        local val = Instance.new("BoolValue")
+        val.Name = "Connected"
+        val.Parent = primary
+
+        local weld = Instance.new("WeldConstraint")
+        weld.Part0 = part
+        weld.Part1 = primary
+        weld.Parent = part
+
+        connectedPart.Anchored = false
+    end
+end
+local function removeConnections(part)
+    for _,weld in pairs(part:GetChildren()) do
+        if weld:IsA("WeldConstraint") then
+            local p = weld.Part1
+            if p and p:FindFirstChild("Connected") then
+                p.Connected:Destroy()
+            end
+
+            weld:Destroy()
+        end
+    end
+end
+
 -- Adds a Part into the list of parts that we're swapping with.
 -- If the part is already added into the list, it will instead be removed.
 -- This also animates the part movement, either bringing it into the air or dropping it to the ground.
@@ -119,6 +161,7 @@ function Swap.AddPart(part)
         table.remove(currentParts, currentPos)
     else
         table.insert(currentParts, part)
+        connectParts(part)
     end
 
     -- Turn off collisions for the part -- this prevents it from getting stuck on anything
@@ -147,6 +190,9 @@ function Swap.AddPart(part)
                 currentParts[1].CanCollide = true
                 currentParts[2].CanCollide = true
 
+                removeConnections(currentParts[1])
+                removeConnections(currentParts[2])
+
                 -- Remove the BodyPositions from each part
                 BodyPosition.Get(currentParts[1]):Destroy()
                 BodyPosition.Get(currentParts[2]):Destroy()
@@ -161,6 +207,7 @@ function Swap.AddPart(part)
         -- If it's already in our list, drop it back to the ground
         animateDrop(part):andThen(function()
             part.CanCollide = true
+            removeConnections(part)
         end)
     else
         -- Otherwise we're adding it into our list, so bring it into the air
