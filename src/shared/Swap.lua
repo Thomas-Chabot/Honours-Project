@@ -67,20 +67,71 @@ local function animateFloat(part)
     return bodyPosition:MoveTo(bodyPosition:GetDefaultPosition() + Vector3.new(0,WorldHeight,0))
 end
 
+-- Connects the part to adjoining parts so that everything will move together.
+-- This currently connects it only to Player objects, but we may want to change that.
+-- @tparam part BasePart The part we want to connect it in with
+local function connectParts(part)
+    local min = part.Position - part.Size/2
+    local max = part.Position + part.Size/2
+    local region = Region3.new(Vector3.new(min.X, part.Position.Y - 20, min.Z), Vector3.new(max.X, part.Position.Y + 20, max.Z))
+    local connected = workspace:FindPartsInRegion3(region, part)
+
+    for _,connectedPart in pairs(connected) do
+        if not connectedPart.Parent then 
+            continue
+        end
+
+        local humanoid = connectedPart.Parent:FindFirstChild("Humanoid")
+        local primary = humanoid and connectedPart.Parent.PrimaryPart
+        if not humanoid or not primary or primary:FindFirstChild("Connected") then
+            continue
+        end
+        
+        local val = Instance.new("BoolValue")
+        val.Name = "Connected"
+        val.Parent = primary
+
+        local weld = Instance.new("WeldConstraint")
+        weld.Part0 = part
+        weld.Part1 = primary
+        weld.Parent = part
+
+        connectedPart.Anchored = false
+    end
+end
+
+-- Removes all WeldConstraints connected to the part.
+-- @tparam part BasePart The part that we want to remove connections from
+local function removeConnections(part)
+    for _,weld in pairs(part:GetChildren()) do
+        if weld:IsA("WeldConstraint") then
+            local p = weld.Part1
+            if p and p:FindFirstChild("Connected") then
+                p.Connected:Destroy()
+            end
+
+            weld:Destroy()
+        end
+    end
+end
+
 -- Removes a part. This performs all cleanup related to the removal of the part.
 -- @tparam part BasePart The part we want to clean up
 local function removePart(part)
     local partIndex = table.find(currentParts, part)
 
-    -- cleans up the BodyPosition object.
+    -- cleans up the changes made to the part.
     -- runs as a function so that we can variably call it once other things are done
-    local function cleanupBodyPosition()
+    local function performCleanup()
+        -- Remove the BodyPosition
         local bodyPos = BodyPosition.Get(part)
         if bodyPos then
             bodyPos:Destroy()
         end
-    end
 
+        -- Remove connections
+        removeConnections(part)
+    end
 
     -- If the part is in the air, remove it
     if partIndex then
@@ -88,15 +139,15 @@ local function removePart(part)
         animateDrop(part):andThen(function()
             part.CanCollide = true
 
-            -- Clean up the BodyPosition
-            cleanupBodyPosition()
+            -- Clean up
+            performCleanup()
         end)
 
         -- Remove it from our list of swapping parts
         table.remove(currentParts, partIndex)
     else
-        -- Clean up the BodyPosition, since we don't need to animate anything
-        cleanupBodyPosition()
+        -- Clean up, since we don't need to animate anything
+        performCleanup()
     end
 end
 
@@ -119,6 +170,7 @@ function Swap.AddPart(part)
         table.remove(currentParts, currentPos)
     else
         table.insert(currentParts, part)
+        connectParts(part)
     end
 
     -- Turn off collisions for the part -- this prevents it from getting stuck on anything
@@ -147,6 +199,9 @@ function Swap.AddPart(part)
                 currentParts[1].CanCollide = true
                 currentParts[2].CanCollide = true
 
+                removeConnections(currentParts[1])
+                removeConnections(currentParts[2])
+
                 -- Remove the BodyPositions from each part
                 BodyPosition.Get(currentParts[1]):Destroy()
                 BodyPosition.Get(currentParts[2]):Destroy()
@@ -161,6 +216,7 @@ function Swap.AddPart(part)
         -- If it's already in our list, drop it back to the ground
         animateDrop(part):andThen(function()
             part.CanCollide = true
+            removeConnections(part)
         end)
     else
         -- Otherwise we're adding it into our list, so bring it into the air
@@ -171,11 +227,12 @@ end
 -- Checks if parts are currently being swapped.
 -- @treturn bool True if a swap is currently being run.
 function Swap.IsSwapping()
-    return #currentParts >= 2
+    return #currentParts >= 1
 end
 
 -- When a part is removed from the Swappable list, clean it up
 CollectionService:GetInstanceRemovedSignal(SwappableTag):Connect(function(part)
+    if Swap.IsSwapping() then return end
     removePart(part)
 end)
 

@@ -9,7 +9,7 @@ local Util = ReplicatedStorage:WaitForChild("Util")
 local Promise = require(Util:WaitForChild("Promise"))
 
 -- Constants
-local ForceMultiplier = 500
+local ForceMultiplier = 5000
 local Instances = { }
 
 -- Sets up a BodyPosition for the given part.
@@ -24,6 +24,8 @@ local function setupBodyPosition(part)
     bodyPosition.MaxForce = Vector3.new(mass, mass, mass) * ForceMultiplier
     bodyPosition.Position = part.Position
     bodyPosition.Parent = part
+
+    part.Anchored = false
 
     return bodyPosition
 end
@@ -109,6 +111,7 @@ end
 
 -- Cleans up the BodyPosition object & all associated instances.
 function BodyPosition:Destroy()
+    self._part.Anchored = true
     self._bodyPosition:Destroy()
     Instances[self._part] = nil
 end

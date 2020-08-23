@@ -13,6 +13,8 @@ local src = ReplicatedStorage:WaitForChild("Source")
 local Swap = require(src:WaitForChild("Swap"))
 local Recolor = require(src:WaitForChild("Recolor"))
 local Input = require(src:WaitForChild("Input"))
+require(src:WaitForChild("CameraMode"))
+require(src:WaitForChild("Tags"))
 
 -- When the player mouses over a part, we want to recolor that part
 RunService.RenderStepped:Connect(function()
