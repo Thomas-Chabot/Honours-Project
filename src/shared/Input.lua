@@ -8,6 +8,7 @@ local Input = { }
 -- Services
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ContextActionService = game:GetService("ContextActionService")
+local UserInputService = game:GetService("UserInputService")
 
 -- Game Structure
 local Util = ReplicatedStorage:WaitForChild("Util")
@@ -18,6 +19,7 @@ local Signal = require(Util:WaitForChild("Signal"))
 -- global variables
 local player = game.Players.LocalPlayer
 local mouse = player:GetMouse()
+local camera = workspace.CurrentCamera
 
 -- Input Events
 Input.Events = {
@@ -39,8 +41,20 @@ end
 
 -- Event Connections
 -- Triggers the MouseClicked event
-mouse.Button1Down:Connect(function()
-    Input.Events.MouseClicked:Fire(mouse.Target)
+UserInputService.InputBegan:Connect(function(input, gameProcessed)
+    if gameProcessed then return end
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        Input.Events.MouseClicked:Fire(mouse.Target)
+    end
+end)
+UserInputService.TouchTapInWorld:Connect(function(position, gameProcessed)
+    if gameProcessed then return end
+    
+	local unitRay = camera:ViewportPointToRay(position.X, position.Y)
+	local ray = Ray.new(unitRay.Origin, unitRay.Direction * 500)
+    local target = game.Workspace:FindPartOnRay(ray)
+    
+    Input.Events.MouseClicked:Fire(target)
 end)
 
 -- CameraMode swap action
