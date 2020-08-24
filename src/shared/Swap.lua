@@ -77,26 +77,40 @@ local function connectParts(part)
     local connected = workspace:FindPartsInRegion3(region, part)
 
     for _,connectedPart in pairs(connected) do
-        if not connectedPart.Parent then 
+        if not connectedPart.Parent or connectedPart.Locked then 
             continue
         end
 
         local humanoid = connectedPart.Parent:FindFirstChild("Humanoid")
         local primary = humanoid and connectedPart.Parent.PrimaryPart
-        if not humanoid or not primary or primary:FindFirstChild("Connected") then
+        local target = humanoid and primary or connectedPart
+        if target:FindFirstChild("Connected") then
             continue
         end
-        
+
+        if humanoid then
+            local weld = Instance.new("WeldConstraint")
+            weld.Part0 = part
+            weld.Part1 = target
+            weld.Parent = part
+        end
+
         local val = Instance.new("BoolValue")
         val.Name = "Connected"
-        val.Parent = primary
+        val.Parent = target
 
-        local weld = Instance.new("WeldConstraint")
-        weld.Part0 = part
-        weld.Part1 = primary
-        weld.Parent = part
+        local canCollide = Instance.new("BoolValue")
+        canCollide.Name = "CanCollide"
+        canCollide.Value = target.CanCollide
+        canCollide.Parent = target
 
-        connectedPart.Anchored = false
+        local anchored = Instance.new("BoolValue")
+        anchored.Name = "Anchored"
+        anchored.Value = target.Anchored
+        anchored.Parent = target
+
+        target.CanCollide = false
+        target.Anchored = false
     end
 end
 
@@ -107,10 +121,20 @@ local function removeConnections(part)
         if weld:IsA("WeldConstraint") then
             local p = weld.Part1
             if p and p:FindFirstChild("Connected") then
+                local canCollide = p:FindFirstChild("CanCollide")
+                local anchored = p:FindFirstChild("Anchored")
+
+                p.CanCollide = canCollide.Value
+                p.Anchored = anchored.Value
+
                 p.Connected:Destroy()
+                canCollide:Destroy()
+                anchored:Destroy()
             end
 
-            weld:Destroy()
+            if p.Parent and p.Parent:FindFirstChild("Humanoid") then
+                weld:Destroy()
+            end
         end
     end
 end
