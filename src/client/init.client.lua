@@ -4,6 +4,7 @@
 
 -- Game Services
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local CollectionService = game:GetService("CollectionService")
 local RunService = game:GetService("RunService")
 
 -- Game Structure
@@ -16,13 +17,23 @@ local Input = require(src:WaitForChild("Input"))
 require(src:WaitForChild("CameraMode"))
 require(src:WaitForChild("Tags"))
 
+-- Globals
+local raycastParams = RaycastParams.new()
+raycastParams.FilterDescendantsInstances = CollectionService:GetTagged("CanSwap")
+raycastParams.FilterType = Enum.RaycastFilterType.Whitelist
+
 -- When the player mouses over a part, we want to recolor that part
 RunService.RenderStepped:Connect(function()
-    Recolor.SetTarget(Input.GetMouseTarget())
+    local targetData = Input.GetTargetData()
+    local raycastResult = workspace:Raycast(targetData.Origin, targetData.Direction, raycastParams)
+    Recolor.SetTarget(raycastResult and raycastResult.Instance)
 end)
 
 -- When the player clicks on a part, add it to the list of parts we want to swap
-Input.Events.MouseClicked:Connect(function(target)
+Input.Events.MouseClicked:Connect(function(targetData)
+    local raycastResult = workspace:Raycast(targetData.Origin, targetData.Direction, raycastParams)
+    local target = raycastResult and raycastResult.Instance
+
     if not target then return end
     Swap.AddPart(target)
 end)

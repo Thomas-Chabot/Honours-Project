@@ -23,9 +23,18 @@ local camera = workspace.CurrentCamera
 
 -- Input Events
 Input.Events = {
-    MouseClicked = Signal.new(), -- Fires on mouse click
+    MouseClicked = Signal.new(), -- Fires on mouse click. Passes in a Ray to where the player clicked
     CameraModeSwitchRequested = Signal.new() -- Fires when the player requests to switch camera mode
 }
+
+-- Converts a Vector2 Position vector into a Ray
+local function getRayFromPositionVector(position)
+	local unitRay = camera:ViewportPointToRay(position.X, position.Y)
+	return {
+        Origin = unitRay.Origin, 
+        Direction = unitRay.Direction * 100
+    }
+end
 
 -- ContextActionService handlers
 -- Handles the request for switching camera mode
@@ -38,23 +47,21 @@ end
 function Input.GetMouseTarget()
     return mouse.Target
 end
+function Input.GetTargetData()
+    return getRayFromPositionVector(UserInputService:GetMouseLocation())
+end
 
 -- Event Connections
 -- Triggers the MouseClicked event
 UserInputService.InputBegan:Connect(function(input, gameProcessed)
     if gameProcessed then return end
     if input.UserInputType == Enum.UserInputType.MouseButton1 then
-        Input.Events.MouseClicked:Fire(mouse.Target)
+        Input.Events.MouseClicked:Fire(getRayFromPositionVector(input.Position))
     end
 end)
 UserInputService.TouchTapInWorld:Connect(function(position, gameProcessed)
     if gameProcessed then return end
-    
-	local unitRay = camera:ViewportPointToRay(position.X, position.Y)
-	local ray = Ray.new(unitRay.Origin, unitRay.Direction * 500)
-    local target = game.Workspace:FindPartOnRay(ray)
-    
-    Input.Events.MouseClicked:Fire(target)
+    Input.Events.MouseClicked:Fire(getRayFromPositionVector(position))
 end)
 
 -- CameraMode swap action
