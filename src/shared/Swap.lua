@@ -17,7 +17,8 @@ local Source = ReplicatedStorage:WaitForChild("Source")
 -- Dependencies
 local Promise = require(Util:WaitForChild("Promise"))
 local Signal = require(Util:WaitForChild("Signal"))
-local BodyPosition = require(Source:WaitForChild("BodyPosition"))
+local BodyPosition = require(Source:WaitForChild("AlignPosition"))
+local BodyGyro = require(Source:WaitForChild("BodyGyro"))
 
 -- Constants
 local SwappableTag = "Swappable"
@@ -63,6 +64,8 @@ end
 -- @tparam part BasePart The part that we want to raise into the air
 -- @tresult Promise A Promise that will resolve once the part reaches the target (i.e. is floating)
 local function animateFloat(part)
+    BodyGyro.GetOrCreate(part)
+
     local bodyPosition = BodyPosition.GetOrCreate(part)
     return bodyPosition:MoveTo(bodyPosition:GetDefaultPosition() + Vector3.new(0,WorldHeight,0))
 end
@@ -77,41 +80,74 @@ local function connectParts(part)
     local connected = workspace:FindPartsInRegion3(region, part)
 
     for _,connectedPart in pairs(connected) do
-        if not connectedPart.Parent then 
+        if not connectedPart.Parent or connectedPart.Locked or CollectionService:HasTag(connectedPart, SwappableTag) then 
             continue
         end
 
         local humanoid = connectedPart.Parent:FindFirstChild("Humanoid")
         local primary = humanoid and connectedPart.Parent.PrimaryPart
-        if not humanoid or not primary or primary:FindFirstChild("Connected") then
+        local target = humanoid and primary or connectedPart
+        if target:FindFirstChild("Connected") then
             continue
         end
-        
+
+        --if humanoid then
+            local weld = Instance.new("WeldConstraint")
+            weld.Part0 = part
+            weld.Part1 = target
+            weld.Parent = part
+        --end
+
         local val = Instance.new("BoolValue")
         val.Name = "Connected"
-        val.Parent = primary
+        val.Parent = target
 
-        local weld = Instance.new("WeldConstraint")
-        weld.Part0 = part
-        weld.Part1 = primary
-        weld.Parent = part
+        local canCollide = Instance.new("BoolValue")
+        canCollide.Name = "CanCollide"
+        canCollide.Value = target.CanCollide
+        canCollide.Parent = target
 
-        connectedPart.Anchored = false
+        local anchored = Instance.new("BoolValue")
+        anchored.Name = "Anchored"
+        anchored.Value = target.Anchored
+        anchored.Parent = target
+
+        -- BUG: The position of attached parts doesn't update after movements once we remove the weld.
+        -- By tracking an offset from the origin part, we can apply this offset later,
+        -- and that will allow us to enforce that all parts move along with this one
+        local positionOffset = Instance.new("Vector3Value")
+        positionOffset.Name = "Offset"
+        positionOffset.Value = target.Position - part.Position
+        positionOffset.Parent = target
+
+        target.CanCollide = false
+        target.Anchored = false
     end
 end
 
 -- Removes all WeldConstraints connected to the part.
 -- @tparam part BasePart The part that we want to remove connections from
 local function removeConnections(part)
+    local connectedParts = { }
+
     for _,weld in pairs(part:GetChildren()) do
         if weld:IsA("WeldConstraint") then
-            local p = weld.Part1
-            if p and p:FindFirstChild("Connected") then
-                p.Connected:Destroy()
+            if weld.Part1 then
+                table.insert(connectedParts, weld.Part1) 
             end
-
             weld:Destroy()
         end
+    end
+    for _,p in pairs(connectedParts) do
+        local canCollide = p:FindFirstChild("CanCollide")
+        local anchored = p:FindFirstChild("Anchored")
+
+        p.CanCollide = canCollide.Value
+        p.Anchored = anchored.Value
+
+        p.Connected:Destroy()
+        canCollide:Destroy()
+        anchored:Destroy()
     end
 end
 
@@ -127,6 +163,11 @@ local function removePart(part)
         local bodyPos = BodyPosition.Get(part)
         if bodyPos then
             bodyPos:Destroy()
+        end
+
+        local bodyGyro = BodyGyro.Get(part)
+        if bodyGyro then
+            bodyGyro:Destroy()
         end
 
         -- Remove connections
@@ -199,12 +240,12 @@ function Swap.AddPart(part)
                 currentParts[1].CanCollide = true
                 currentParts[2].CanCollide = true
 
-                removeConnections(currentParts[1])
-                removeConnections(currentParts[2])
-
                 -- Remove the BodyPositions from each part
                 BodyPosition.Get(currentParts[1]):Destroy()
                 BodyPosition.Get(currentParts[2]):Destroy()
+
+                removeConnections(currentParts[1])
+                removeConnections(currentParts[2])
 
                 -- Reset the list of swapping parts
                 currentParts = { }

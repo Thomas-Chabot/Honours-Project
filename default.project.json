@@ -55,6 +55,12 @@
         "RespectFilteringEnabled": true
       }
     },
+    "StarterGui": {
+      "$className": "StarterGui",
+      "Source": {
+        "$path": "src/gui"
+      }
+    },
     "StarterPlayer": {
       "$className": "StarterPlayer",
 

@@ -5,7 +5,9 @@
 
 local CollectionService = game:GetService("CollectionService")
 function giveOwnership(instance, player)
-    instance:SetNetworkOwner(player)
+    pcall(function() 
+        instance:SetNetworkOwner(player) 
+    end)
 end
 
 local player = game.Players.PlayerAdded:Wait()
@@ -18,3 +20,9 @@ end)
 CollectionService:GetInstanceRemovedSignal("CanSwap"):Connect(function(instance)
     giveOwnership(instance, nil)
 end)
+for _,part in pairs(workspace:GetDescendants()) do
+    if part:IsA("BasePart") and not part.Anchored then
+        print(part.Name)
+        giveOwnership(part, player)
+    end
+end
