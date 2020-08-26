@@ -80,7 +80,7 @@ local function connectParts(part)
     local connected = workspace:FindPartsInRegion3(region, part)
 
     for _,connectedPart in pairs(connected) do
-        if not connectedPart.Parent or connectedPart.Locked then 
+        if not connectedPart.Parent or connectedPart.Locked or CollectionService:HasTag(connectedPart, SwappableTag) then 
             continue
         end
 

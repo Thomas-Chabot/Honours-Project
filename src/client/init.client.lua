@@ -16,6 +16,7 @@ local Recolor = require(src:WaitForChild("Recolor"))
 local Input = require(src:WaitForChild("Input"))
 require(src:WaitForChild("CameraMode"))
 require(src:WaitForChild("Tags"))
+require(src:WaitForChild("Barriers"))
 
 -- Globals
 local raycastParams = RaycastParams.new()
@@ -30,7 +31,8 @@ RunService.RenderStepped:Connect(function()
 end)
 
 -- When the player clicks on a part, add it to the list of parts we want to swap
-Input.Events.MouseClicked:Connect(function(targetData)
+Input.Events.MouseClicked:Connect(function()
+    local targetData = Input.GetTargetData()
     local raycastResult = workspace:Raycast(targetData.Origin, targetData.Direction, raycastParams)
     local target = raycastResult and raycastResult.Instance
 

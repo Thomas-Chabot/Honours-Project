@@ -38,7 +38,7 @@ local function setupBodyPosition(part)
     alignPosition.Attachment1 = attachment1
     alignPosition.RigidityEnabled = false
     alignPosition.MaxForce = 9e9
-    alignPosition.MaxVelocity = 30
+    alignPosition.MaxVelocity = 50
     alignPosition.Responsiveness = 10
 
     alignPosition.Parent = part

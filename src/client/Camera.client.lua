@@ -14,6 +14,11 @@ local Speed = 0.5
 
 Camera.Events.CameraModeChanged:Connect(function(mode)
 	if mode == "Overhead" then
+		local cf = cam.CFrame
+		X = cf.X
+		Y = 75
+		Z = cf.Z
+
 		player.CameraMode = Enum.CameraMode.Classic
 		cam.CameraSubject = workspace.PrimaryPart
 		cam.CameraType = Enum.CameraType.Scriptable
