@@ -14,13 +14,18 @@ local CheckerboardPieces = { }
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 function MapController:Start()
+    local Objects = ReplicatedStorage:WaitForChild("Objects")
+    CheckerboardPieces = {
+        Objects:WaitForChild("BlackChecker"),
+        Objects:WaitForChild("RedChecker")
+    }
+
 	self:Build()
 end
 
 
 function MapController:Init()
-    CheckerboardPieces[0] = ReplicatedStorage:WaitForChild("BlackChecker")
-    CheckerboardPieces[1] = ReplicatedStorage:WaitForChild("RedChecker")
+
 end
 
 function MapController:Build()
@@ -28,7 +33,6 @@ function MapController:Build()
         wait()
     until self.Services.MapService
     local data = self.Services.MapService:GetLayout()
-    
     for rowIndex, row in ipairs(data) do
         for colIndex, element in ipairs(row) do
             local obj = CheckerboardPieces[element]:Clone()

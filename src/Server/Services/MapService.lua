@@ -34,7 +34,7 @@ function MapService.Client:GetLayout()
     for row = 1,20 do
         layout[row] = { }
         for col = 1,20 do
-            layout[row][col] = (row + col) % 2
+            layout[row][col] = ((row + col) % 2) + 1
         end
     end
 
