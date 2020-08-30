@@ -37,6 +37,7 @@ local player
 local controls
 local target
 local cameraPosition
+local maid
 
 local function GetHumanoid()
     return player.Character and player.Character:FindFirstChild("Humanoid")
@@ -47,6 +48,7 @@ function CameraController:Start()
     camera = workspace.CurrentCamera
     player = game.Players.LocalPlayer
     target = workspace.PrimaryPart
+    maid = self.Shared.Maid.new()
 
     -- Controls Module
     local playerModule = require(player.PlayerScripts:WaitForChild("PlayerModule"))
@@ -54,19 +56,24 @@ function CameraController:Start()
 
     -- Event connections
     -- Update camera position every frame
-    RunService.RenderStepped:Connect(function() self:Update() end)
+    maid:GiveTask(RunService.RenderStepped:Connect(function() self:Update() end))
 
     -- Swap between camera modes
-    ContextActionService:BindAction("CameraModes", function(_, inputState)
+    ContextActionService:BindAction("SwapCameraMode", function(_, inputState)
         if inputState ~= Enum.UserInputState.Begin then return end
         self:ChangeMode()
     end, true, Enum.KeyCode.LeftControl, Enum.KeyCode.ButtonR2)
+    maid:GiveTask(function() ContextActionService:UnbindAction("SwapCameraMode") end)
 end
 
 
 function CameraController:Init()
     self:RegisterEvent("CameraModeChanged")
     Input = self.Controllers.UserInput
+end
+
+function CameraController:Destroy()
+    maid:DoCleaning()
 end
 
 function CameraController:GetMode()
