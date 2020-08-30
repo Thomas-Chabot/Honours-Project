@@ -26,9 +26,6 @@ local CameraModes = {
     }
 }
 
--- Dependencies
-local Input
-
 -- Global Variables
 local speed = 0.75
 local currentMode = 1
@@ -69,7 +66,6 @@ end
 
 function CameraController:Init()
     self:RegisterEvent("CameraModeChanged")
-    Input = self.Controllers.UserInput
 end
 
 function CameraController:Destroy()
