@@ -11,6 +11,7 @@
 local CameraController = {}
 
 local RunService = game:GetService("RunService")
+local ContextActionService = game:GetService("ContextActionService")
 
 local CameraModes = {
     {
@@ -52,12 +53,14 @@ function CameraController:Start()
     controls = playerModule:GetControls()
 
     -- Event connections
+    -- Update camera position every frame
     RunService.RenderStepped:Connect(function() self:Update() end)
-    Input:Get("Keyboard").KeyDown:Connect(function(keyCode)
-        if keyCode == Enum.KeyCode.LeftControl then
-            self:ChangeMode()
-        end
-    end)
+
+    -- Swap between camera modes
+    ContextActionService:BindAction("CameraModes", function(_, inputState)
+        if inputState ~= Enum.UserInputState.Begin then return end
+        self:ChangeMode()
+    end, true, Enum.KeyCode.LeftControl, Enum.KeyCode.ButtonR2)
 end
 
 
