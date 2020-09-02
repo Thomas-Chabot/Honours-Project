@@ -76,11 +76,17 @@ function SwapController:Pickup(part)
 
     StartPosition = part.Position
     TargetPart = part
-    part.Transparency = 0.6
+    part.Transparency = 0.2
     part.Parent = IgnoredObjectsFolder
 end
 function SwapController:Release()
-    TargetPart.Position = StartPosition
+    local releasedOver = GetTarget()
+    if releasedOver then
+        TargetPart.Position = releasedOver.Position
+        releasedOver.Position = StartPosition
+    else
+        TargetPart.Position = StartPosition
+    end
     TargetPart.Transparency = 0 
     TargetPart.Parent = workspace
     TargetPart = nil
