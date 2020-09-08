@@ -26,10 +26,6 @@ function CameraBridge:Update()
     self:_getCamera():Update()
 end
 
-function CameraBridge:OnPointerAction(...)
-    self:_getCamera():OnPointerAction(...)
-end
-
 -- Swaps the active view mode
 function CameraBridge:Swap()
     self:_moveToNextCamera()
