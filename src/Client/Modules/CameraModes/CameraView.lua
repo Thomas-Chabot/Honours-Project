@@ -35,7 +35,13 @@ end
 
 -- To be called when the camera view becomes active.
 -- Updates game settings so that the camera can be used. 
-function CameraView:Apply()
+function CameraView:Activate()
+    error("Method Not Implemented")
+end
+
+-- Called to deactivate the camera.
+-- Performs cleaning that needs to be done once the camera is no longer active.
+function CameraView:Deactivate()
     error("Method Not Implemented")
 end
 
@@ -43,13 +49,6 @@ end
 function CameraView:Update()
     error("Method Not Implemented")
 end
-
--- Called with the PointerAction event.
--- Should be implemented for any camera module that overrides the camera for zooming.
-function CameraView:OnPointerAction(wheel, pan, pinch)
-    
-end
-
 
 -- Returns the local player.
 function CameraView:_getPlayer()

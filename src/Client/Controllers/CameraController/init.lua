@@ -8,7 +8,6 @@ local CameraController = {}
 
 local RunService = game:GetService("RunService")
 local ContextActionService = game:GetService("ContextActionService")
-local UserInputService = game:GetService("UserInputService")
 
 local CameraMode
 local Maid
@@ -29,12 +28,6 @@ function CameraController:Start()
     ContextActionService:BindAction("SwapCameraMode", function(_, inputState)
         self:_checkSwapCameraMode(inputState)
     end, true, Enum.KeyCode.LeftControl, Enum.KeyCode.ButtonR2)
-
-    -- Zoom in/out
-    Maid:GiveTask(UserInputService.PointerAction:Connect(function(wheel, pan, pinch, processed)
-        if processed then return end
-        CameraMode:OnPointerAction(wheel, pan, pinch)
-    end))
 end
 
 -- Called to initialize the module

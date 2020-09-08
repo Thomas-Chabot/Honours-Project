@@ -28,12 +28,17 @@ function PlayerView:Init()
 end
 
 -- Applies the changes for the player to return to first person view
-function PlayerView:Apply()
+function PlayerView:Activate()
     camera.CameraType = Enum.CameraType.Custom
     player.CameraMode = Enum.CameraMode.LockFirstPerson
     camera.CameraSubject = player.Character and player.Character:FindFirstChildOfClass("Humanoid")
 
     controls:Enable()
+end
+
+-- Deactivate the Player View camera
+function PlayerView:Deactivate()
+
 end
 
 function PlayerView:Update()

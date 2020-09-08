@@ -33,7 +33,7 @@ end
 -- Swaps the active view mode
 function CameraBridge:Swap()
     self:_moveToNextCamera()
-    self:_getCamera():Apply()
+    self:_getCamera():Activate()
 end
 
 -- Private - Returns the active camera mode
@@ -42,6 +42,7 @@ function CameraBridge:_getCamera()
 end
 -- Private - Pushes forward to the next camera mode
 function CameraBridge:_moveToNextCamera()
+    self:_getCamera():Deactivate()
     ActiveView = (ActiveView % #CameraViews) + 1
 end
 
