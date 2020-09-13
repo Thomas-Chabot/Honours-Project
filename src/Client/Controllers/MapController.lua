@@ -11,7 +11,21 @@
 
 local MapController = {}
 local CheckerboardPieces = { }
+local SwappableParts = { }
+
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local CollectionService = game:GetService("CollectionService")
+local CameraController
+
+local function toggleTag(parts, tag, isActive)
+    for _,part in pairs(parts) do
+        if isActive then
+            CollectionService:AddTag(part, tag) 
+        else
+            CollectionService:RemoveTag(part, tag)
+        end
+    end
+end
 
 function MapController:Start()
     local Objects = ReplicatedStorage:WaitForChild("Objects")
@@ -20,12 +34,15 @@ function MapController:Start()
         Objects:WaitForChild("RedChecker")
     }
 
-	self:Build()
+    self:Build()
+    CameraController:ConnectEvent("CameraModeChanged", function()
+        self:OnViewModeChanged()
+    end)
 end
 
 
 function MapController:Init()
-
+    CameraController = self.Controllers.CameraController
 end
 
 function MapController:Build()
@@ -39,8 +56,15 @@ function MapController:Build()
             obj.Position = Vector3.new((rowIndex - 1) * 20, 0, (colIndex - 1) * 20)
             obj.Anchored = true
             obj.Parent = workspace
+
+            table.insert(SwappableParts, obj)
         end
     end
+end
+
+function MapController:OnViewModeChanged()
+    local viewMode = CameraController:GetCameraMode()
+    toggleTag(SwappableParts, "Swappable", viewMode == "Overhead")
 end
 
 

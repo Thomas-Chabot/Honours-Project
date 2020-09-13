@@ -11,6 +11,8 @@
 
 local SwapController = {}
 
+local CollectionService = game:GetService("CollectionService")
+
 local Input
 local Recolor
 local Mouse
@@ -24,7 +26,12 @@ local IgnoredObjectsFolder
 
 local function GetTarget()
     local targetData = Mouse:Raycast(RaycastData)
-    return targetData and targetData.Instance
+    local targ = targetData and targetData.Instance
+    if not targ or not CollectionService:HasTag(targ, "Swappable") then
+        return nil 
+    end
+
+    return targ
 end
 
 function SwapController:Start()

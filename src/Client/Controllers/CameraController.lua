@@ -46,7 +46,9 @@ end
 -- Handler for swapping camera mode. Only fires if InputState is End
 function CameraController:_checkSwapCameraMode(inputState)
     if inputState ~= Enum.UserInputState.End then return end
+    
     CameraMode:Swap()
+    self:FireEvent("CameraModeChanged")
 end
 
 return CameraController
