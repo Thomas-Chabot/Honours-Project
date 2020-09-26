@@ -15,25 +15,30 @@ local player
 local camera
 local controls
 
+local CameraView
 local Zoom
 local Maid, maid
+
 local UserInputService = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
 
 -- Called when the module is ready for set up
 function OverheadView:Start()
-    cameraPosition = Vector2.new(0,0)
+    CameraView.Start(self)
 
     player = self:_getPlayer()
     camera = self:_getCamera()
     controls = self:_getControls()
+
+    cameraPosition = Vector2.new(0,0)
 end
 
--- Initializes the module.
-function OverheadView:Init()
+-- Initializes the module
+function OverheadView:Init() 
     Zoom = self.Modules.Zoom
     Maid = self.Shared.Maid
     
-    local CameraView = self.Modules.CameraModes.CameraView
+    CameraView = self.Modules.CameraModes.CameraView
     OverheadView = setmetatable(OverheadView, {
         __index = CameraView
     })
@@ -43,7 +48,6 @@ end
 function OverheadView:Activate()
     player.CameraMode = Enum.CameraMode.Classic
     camera.CameraType = Enum.CameraType.Scriptable
-    --camera.CameraSubject = workspace.PrimaryPart
 
     -- Disable player movement
     controls:Disable()
@@ -61,6 +65,11 @@ function OverheadView:Activate()
     maid:GiveTask(UserInputService.PointerAction:Connect(function(wheel, pan, pinch, processed)
         if processed then return end
         self:OnPointerAction(wheel, pan, pinch)
+    end))
+
+    -- Update camera positioning
+    maid:GiveTask(RunService.RenderStepped:Connect(function()
+        self:Update()
     end))
 end
 

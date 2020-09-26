@@ -12,8 +12,12 @@ local player
 local controls
 local camera
 
+local CameraView
+
 -- Called when the module is ready to be started
 function PlayerView:Start()
+    CameraView.Start(self)
+
     player = self:_getPlayer()
     camera = self:_getCamera()
     controls = self:_getControls()
@@ -21,7 +25,7 @@ end
 
 -- Initializees the module
 function PlayerView:Init()
-    local CameraView = self.Modules.CameraModes.CameraView
+    CameraView = self.Modules.CameraModes.CameraView
     PlayerView = setmetatable(PlayerView, {
         __index = CameraView
     })
@@ -39,10 +43,6 @@ end
 -- Deactivate the Player View camera
 function PlayerView:Deactivate()
 
-end
-
-function PlayerView:Update()
-    -- No work for it to do in the PlayerView, works by Roblox's own camera script
 end
 
 return PlayerView

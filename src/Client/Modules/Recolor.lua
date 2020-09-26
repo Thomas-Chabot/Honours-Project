@@ -63,6 +63,11 @@ function Recolor.SetTarget(target)
     end
 end
 
+-- Retrieves the original color of the current target
+function Recolor.GetColor()
+    return currentTarget and currentTarget.Color
+end
+
 -- Enables the Recolor system, allowing objects to be colored/highlighted.
 function Recolor.Enable()
     isEnabled = true

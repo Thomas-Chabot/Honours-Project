@@ -14,14 +14,13 @@ local PlayerSwapModule = {}
 local CollectionService = game:GetService("CollectionService")
 local RunService = game:GetService("RunService")
 
-local Maid, Input, Mouse, Recolor, SwapService
+local Maid, Input, Mouse, Recolor, SwapService, SwapControls
 local maid
-local TargetPart
+
+local BasePart, ClonedPart
 
 local RaycastData
 local IgnoredObjectsFolder
-
-local StartPosition
 
 local function GetTarget()
     local targetData = Mouse:Raycast(RaycastData)
@@ -33,6 +32,13 @@ local function GetTarget()
     return targ
 end
 
+local function Clone(part)
+    local clone = part:Clone()
+    clone.Name = part.Name .. "Clone"
+    clone.Parent = IgnoredObjectsFolder
+
+    return clone
+end
 
 function PlayerSwapModule:Start()    
     IgnoredObjectsFolder = Instance.new("Folder")
@@ -47,6 +53,7 @@ function PlayerSwapModule:Init()
     Maid = self.Shared.Maid
     Input = self.Controllers.UserInput
     Recolor = self.Modules.Recolor
+    SwapControls = self.Modules.SwapInternal.SwapControls
     SwapService = self.Services.SwapService
 end
 
@@ -73,49 +80,44 @@ end
 
 
 function PlayerSwapModule:Update()
-    if TargetPart then
+    if ClonedPart then
         local ray = Mouse:GetRay(1)
-        TargetPart.Position = ray.Origin + ray.Direction.unit * 75
+        ClonedPart.Position = ray.Origin + ray.Direction.unit * 75
     end
     
     Recolor.SetTarget(GetTarget())
 end
 
 function PlayerSwapModule:Pickup(part)
-    if TargetPart then
+    if ClonedPart then
         self:Release()
     end
 
-    StartPosition = part.Position
-    TargetPart = part
-    part.Transparency = 0.2
-    part.Parent = IgnoredObjectsFolder
+    BasePart = part
+    ClonedPart = Clone(part)
+
+    BasePart.Transparency = 0.7
+    ClonedPart.Transparency = 0.2
+    ClonedPart.BrickColor = Recolor.GetColor()
 end
 function PlayerSwapModule:Release()
-    if not TargetPart then return end
-    
+    if not ClonedPart then return end
+    ClonedPart:Destroy()
+
     local releasedOver = GetTarget()
-    if releasedOver then
-        TargetPart.Position = releasedOver.Position
-        releasedOver.Position = StartPosition
-    else
-        TargetPart.Position = StartPosition
+    if BasePart and releasedOver then
+        SwapControls.Swap(BasePart, releasedOver)
+        
+        local valid = SwapService:Swap(BasePart.Name, releasedOver.Name)
+        if not valid then
+            SwapControls.Swap(BasePart, releasedOver)
+        end
     end
-    TargetPart.Transparency = 0 
-    TargetPart.Parent = workspace
 
-    local p = TargetPart
-    TargetPart = nil
-
-    local valid = SwapService:Swap(p.Name, releasedOver.Name)
-    if not valid then
-        self:Reverse(p, releasedOver)
+    if BasePart then
+        BasePart.Transparency = 0
+        BasePart = nil
     end
-end
-function PlayerSwapModule:Reverse(p1, p2)
-    local p = p1.Position
-    p1.Position = p2.Position
-    p2.Position = p
 end
 
 

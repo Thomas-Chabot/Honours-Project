@@ -24,7 +24,6 @@ function DungeonMasterController:Start()
     local dungeonMasterService = self.Services.DungeonMasterService
 
     currentDungeonMaster = dungeonMasterService:GetDungeonMaster()
-    print("Dungeon master is ", currentDungeonMaster)
     dungeonMasterService.DungeonMasterUpdated:Connect(function(...)
         self:OnUpdated(...)
     end)
@@ -38,14 +37,12 @@ end
 -- Retrieves whether the player is the current dungeon master.
 -- Returns T/F, runs in O(1).
 function DungeonMasterController:IsDungeonMaster()
-    print(currentDungeonMaster)
     return player == currentDungeonMaster
 end
 
 -- Reacts to dungeon master updates
 function DungeonMasterController:OnUpdated(newDungeonMaster)
     currentDungeonMaster = newDungeonMaster
-    print("Dungeon master is ", newDungeonMaster)
 end
 
 return DungeonMasterController

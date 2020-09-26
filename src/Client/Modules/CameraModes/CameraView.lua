@@ -18,7 +18,7 @@ local controls
 local camera
 
 -- Initializes local variables
-function CameraView:Init()
+function CameraView:Start()
     -- player
     player = game.Players.LocalPlayer
     
@@ -42,11 +42,6 @@ end
 -- Called to deactivate the camera.
 -- Performs cleaning that needs to be done once the camera is no longer active.
 function CameraView:Deactivate()
-    error("Method Not Implemented")
-end
-
--- Called on every render when the camera is active.
-function CameraView:Update()
     error("Method Not Implemented")
 end
 

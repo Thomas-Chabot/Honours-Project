@@ -11,7 +11,7 @@
 
 local ServerSwapModule = {}
 
-local SwapService, Maid
+local SwapService, SwapControls, Maid
 local maid
 
 function ServerSwapModule:Start()
@@ -19,6 +19,7 @@ function ServerSwapModule:Start()
 end
 function ServerSwapModule:Init()
     Maid = self.Shared.Maid
+    SwapControls = self.Modules.SwapInternal.SwapControls
     SwapService = self.Services.SwapService
 end
 
@@ -29,10 +30,7 @@ function ServerSwapModule:Activate()
         local p1 = workspace:FindFirstChild(part1)
         local p2 = workspace:FindFirstChild(part2)
 
-        local p = p1.Position
-        p1.Position = p2.Position
-        p2.Position = p
-        
+        SwapControls.Swap(p1, p2)
         print(part1, part2, " swapped")
     end))
 end
