@@ -10,10 +10,8 @@
 
 
 local MapController = {}
-local CheckerboardPieces = { }
 local SwappableParts = { }
 
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local CollectionService = game:GetService("CollectionService")
 local CameraController
 
@@ -28,11 +26,6 @@ local function toggleTag(parts, tag, isActive)
 end
 
 function MapController:Start()
-    local Objects = ReplicatedStorage:WaitForChild("Objects")
-    CheckerboardPieces = {
-        Objects:WaitForChild("BlackChecker"),
-        Objects:WaitForChild("RedChecker")
-    }
 
     self:Build()
     CameraController:ConnectEvent("CameraModeChanged", function()
@@ -52,7 +45,8 @@ function MapController:Build()
     local data = self.Services.MapService:GetLayout()
     for rowIndex, row in ipairs(data) do
         for colIndex, element in ipairs(row) do
-            local obj = CheckerboardPieces[element]:Clone()
+            local obj = element.Type:Clone()
+            obj.Name = element.Id
             obj.Position = Vector3.new((rowIndex - 1) * 20, 0, (colIndex - 1) * 20)
             obj.Anchored = true
             obj.Parent = workspace

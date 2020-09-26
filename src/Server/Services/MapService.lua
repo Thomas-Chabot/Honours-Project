@@ -10,8 +10,15 @@
 local MapService = {Client = {}}
 print("MapService required")
 
-function MapService:Start()
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local CheckerboardPieces
 
+function MapService:Start()
+    local Objects = ReplicatedStorage:WaitForChild("Objects")
+    CheckerboardPieces = {
+        Objects:WaitForChild("BlackChecker"),
+        Objects:WaitForChild("RedChecker")
+    }
 end
 
 
@@ -34,7 +41,12 @@ function MapService.Client:GetLayout()
     for row = 1,20 do
         layout[row] = { }
         for col = 1,20 do
-            layout[row][col] = ((row + col) % 2) + 1
+            local id = "Checker_" .. row .. "_" .. col
+            local checkerType = ((row + col) % 2) + 1
+            layout[row][col] = {
+                Id = id,
+                Type = CheckerboardPieces[checkerType]
+            }
         end
     end
 

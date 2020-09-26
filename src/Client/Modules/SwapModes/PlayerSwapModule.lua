@@ -1,28 +1,27 @@
--- Swap Controller
+-- Player Swap
 -- Username
--- August 30, 2020
+-- September 21, 2020
 
 --[[
-    This controls the swapping of two parts.
-    When a player mouses over a part, that part becomes selected,
-    and can be dragged around.
+    This swap module controls swapping when the player is the dungeon master,
+     and is able to make swaps themselves.
+    In this case, swaps are made based on user input - dragging, etc.
 ]]
 
---[[
-local SwapController = {}
+
+local PlayerSwapModule = {}
 
 local CollectionService = game:GetService("CollectionService")
+local RunService = game:GetService("RunService")
 
-local Input
-local Recolor
-local Mouse
-
-local Camera
+local Maid, Input, Mouse, Recolor, SwapService
+local maid
 local TargetPart
-local StartPosition
 
 local RaycastData
 local IgnoredObjectsFolder
+
+local StartPosition
 
 local function GetTarget()
     local targetData = Mouse:Raycast(RaycastData)
@@ -34,40 +33,46 @@ local function GetTarget()
     return targ
 end
 
-function SwapController:Start()
+
+function PlayerSwapModule:Start()    
     IgnoredObjectsFolder = Instance.new("Folder")
     IgnoredObjectsFolder.Parent = workspace
 
     RaycastData = RaycastParams.new()
     RaycastData.FilterType = Enum.RaycastFilterType.Blacklist
     RaycastData.FilterDescendantsInstances = {IgnoredObjectsFolder}
-
-    Mouse = Input:Get("Mouse")
-    Mouse.LeftDown:Connect(function()
-        self:Pickup(GetTarget())
-    end)
-    Mouse.LeftUp:Connect(function()
-        self:Release()
-    end)
-
-    game:GetService("RunService").RenderStepped:Connect(function()
-        self:Update()
-    end)
-
-    Camera = workspace.CurrentCamera
 end
 
-
-function SwapController:Init()
+function PlayerSwapModule:Init()
+    Maid = self.Shared.Maid
     Input = self.Controllers.UserInput
     Recolor = self.Modules.Recolor
+    SwapService = self.Services.SwapService
 end
 
-function SwapController:IsSwapping()
-    return TargetPart ~= nil
+function PlayerSwapModule:Activate()
+    Mouse = Input:Get("Mouse")
+    maid = Maid.new()
+    maid:GiveTask(Mouse.LeftDown:Connect(function()
+        self:Pickup(GetTarget())
+    end))
+    maid:GiveTask(Mouse.LeftUp:Connect(function()
+        self:Release()
+    end))
+    maid:GiveTask(RunService.RenderStepped:Connect(function()
+        self:Update()
+    end))
 end
 
-function SwapController:Update()
+function PlayerSwapModule:Deactivate()
+    if maid then
+        maid:DoCleaning()
+        maid = nil 
+    end
+end
+
+
+function PlayerSwapModule:Update()
     if TargetPart then
         local ray = Mouse:GetRay(1)
         TargetPart.Position = ray.Origin + ray.Direction.unit * 75
@@ -76,7 +81,7 @@ function SwapController:Update()
     Recolor.SetTarget(GetTarget())
 end
 
-function SwapController:Pickup(part)
+function PlayerSwapModule:Pickup(part)
     if TargetPart then
         self:Release()
     end
@@ -86,7 +91,7 @@ function SwapController:Pickup(part)
     part.Transparency = 0.2
     part.Parent = IgnoredObjectsFolder
 end
-function SwapController:Release()
+function PlayerSwapModule:Release()
     if not TargetPart then return end
     
     local releasedOver = GetTarget()
@@ -102,29 +107,17 @@ function SwapController:Release()
     local p = TargetPart
     TargetPart = nil
 
-    local valid = self.Services.SwapService:Swap(p.Name, releasedOver.Name)
+    local valid = SwapService:Swap(p.Name, releasedOver.Name)
     if not valid then
         self:Reverse(p, releasedOver)
     end
 end
-function SwapController:Reverse(p1, p2)
+function PlayerSwapModule:Reverse(p1, p2)
     local p = p1.Position
     p1.Position = p2.Position
     p2.Position = p
 end
 
-return SwapController
-]]
 
-local SwapController = { }
 
-function SwapController:Start()
-    wait(3)
-    if self.Controllers.DungeonMasterController:IsDungeonMaster() then
-       self.Modules.SwapModes.PlayerSwapModule:Activate()
-    else
-        self.Modules.SwapModes.ServerSwapModule:Activate() 
-    end
-end
-
-return SwapController
+return PlayerSwapModule
