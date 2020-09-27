@@ -47,6 +47,7 @@ end
 -- Applies the changes needed for the player to be in Overhead view
 function OverheadView:Activate()
     player.CameraMode = Enum.CameraMode.Classic
+    camera.CameraSubject = workspace.PrimaryPart or workspace:FindFirstChildWhichIsA("BasePart")
     camera.CameraType = Enum.CameraType.Scriptable
 
     -- Disable player movement
