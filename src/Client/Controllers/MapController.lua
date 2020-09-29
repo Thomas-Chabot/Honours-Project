@@ -47,7 +47,7 @@ function MapController:Build()
         for colIndex, element in ipairs(row) do
             local obj = element.Type:Clone()
             obj.Name = element.Id
-            obj.Position = Vector3.new((rowIndex - 1) * 20, 0, (colIndex - 1) * 20)
+            obj.Position = Vector3.new((rowIndex - 1) * 24, 0, (colIndex - 1) * 24)
             obj.Anchored = true
             obj.Parent = workspace
 

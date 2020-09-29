@@ -9,7 +9,7 @@ OverheadView.__index = OverheadView
 OverheadView.Name = "Overhead"
 
 local cameraPosition
-local speed = 0.75
+local speed = 1
 
 local player
 local camera
