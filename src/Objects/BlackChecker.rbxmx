@@ -72,9 +72,9 @@
 			<token name="formFactorRaw">1</token>
 			<token name="shape">1</token>
 			<Vector3 name="size">
-				<X>20</X>
+				<X>24</X>
 				<Y>1</Y>
-				<Z>20</Z>
+				<Z>24</Z>
 			</Vector3>
 		</Properties>
 	</Item>
