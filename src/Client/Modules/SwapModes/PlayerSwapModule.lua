@@ -138,22 +138,19 @@ function PlayerSwapModule:Release()
         -- Do the swap
         SwapControls.Swap(BasePart, releasedOver)
         
-        -- TODO: Change the spawn to a Promise; spawns behave badly and promises work better
-        spawn(function()
-            -- Feed the swap through to the server
-            -- If the server returns false, it means the movement is invalid & has to be reversed
-            local valid = SwapService:Swap(BasePart.Name, releasedOver.Name)
-            if not valid then
-                -- Swap the BasePart and releasedOver parts back -- reversing the swap
-                SwapControls.Swap(BasePart, releasedOver)
+        local basePart = BasePart
+        self:Cleanup()
 
-                -- TODO: Would want to report an error here
-            end
-        end)
+        -- Feed the swap through to the server
+        -- If the server returns false, it means the movement is invalid & has to be reversed
+        local valid = SwapService:Swap(basePart.Name, releasedOver.Name)
+        if not valid then
+            -- Swap the BasePart and releasedOver parts back -- reversing the swap
+            SwapControls.Swap(basePart, releasedOver)
+
+            -- TODO: Would want to report an error here
+        end
     end
-
-    -- Clean up all data
-    self:Cleanup()
 end
 
 -- Cleans up parts data & resets active parts
