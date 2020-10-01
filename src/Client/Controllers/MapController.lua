@@ -42,6 +42,10 @@ function MapController:Build()
     repeat
         wait()
     until self.Services.MapService
+
+    local folder = Instance.new("Folder")
+    folder.Name = "Swappables"
+
     local data = self.Services.MapService:GetLayout()
     for rowIndex, row in ipairs(data) do
         for colIndex, element in ipairs(row) do
@@ -49,11 +53,13 @@ function MapController:Build()
             obj.Name = element.Id
             obj.Position = Vector3.new((rowIndex - 1) * 24, 0, (colIndex - 1) * 24)
             obj.Anchored = true
-            obj.Parent = workspace
+            obj.Parent = folder
 
             table.insert(SwappableParts, obj)
         end
     end
+
+    folder.Parent = workspace
 end
 
 function MapController:OnViewModeChanged()

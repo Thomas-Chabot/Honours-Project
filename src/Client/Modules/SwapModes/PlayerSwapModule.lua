@@ -20,7 +20,7 @@ local maid
 local BasePart, ClonedPart
 
 local RaycastData
-local IgnoredObjectsFolder
+local SwappableObjectsFolder
 
 -- Retrieves a part that the mouse is currently sitting over, if one exists.
 local function GetTarget()
@@ -38,19 +38,18 @@ local function Clone(part)
     local clone = part:Clone()
     clone.CanCollide = false
     clone.Name = part.Name .. "Clone"
-    clone.Parent = IgnoredObjectsFolder
+    clone.Parent = workspace
 
     return clone
 end
 
 -- Starts up the module -- set up some constants
-function PlayerSwapModule:Start()    
-    IgnoredObjectsFolder = Instance.new("Folder")
-    IgnoredObjectsFolder.Parent = workspace
+function PlayerSwapModule:Start()
+    SwappableObjectsFolder = workspace:WaitForChild("Swappables")
 
     RaycastData = RaycastParams.new()
-    RaycastData.FilterType = Enum.RaycastFilterType.Blacklist
-    RaycastData.FilterDescendantsInstances = {IgnoredObjectsFolder}
+    RaycastData.FilterType = Enum.RaycastFilterType.Whitelist
+    RaycastData.FilterDescendantsInstances = {SwappableObjectsFolder}
 end
 
 -- Loads dependencies
@@ -119,7 +118,8 @@ function PlayerSwapModule:Pickup(part)
     BasePart = part
     ClonedPart = Clone(part)
 
-    BasePart.Transparency = 0.7
+    --BasePart.Transparency = 0.7
+    BasePart.Material = Enum.Material.ForceField
     ClonedPart.Transparency = 0.2
     ClonedPart.BrickColor = Recolor.GetColor()
 end
@@ -138,13 +138,18 @@ function PlayerSwapModule:Release()
         -- Do the swap
         SwapControls.Swap(BasePart, releasedOver)
         
-        -- Feed the swap through to the server
-        -- If the server returns false, it means the movement is invalid & has to be reversed
-        local valid = SwapService:Swap(BasePart.Name, releasedOver.Name)
-        if not valid then
-            -- Swap the BasePart and releasedOver parts back -- reversing the swap
-            SwapControls.Swap(BasePart, releasedOver)
-        end
+        -- TODO: Change the spawn to a Promise; spawns behave badly and promises work better
+        spawn(function()
+            -- Feed the swap through to the server
+            -- If the server returns false, it means the movement is invalid & has to be reversed
+            local valid = SwapService:Swap(BasePart.Name, releasedOver.Name)
+            if not valid then
+                -- Swap the BasePart and releasedOver parts back -- reversing the swap
+                SwapControls.Swap(BasePart, releasedOver)
+
+                -- TODO: Would want to report an error here
+            end
+        end)
     end
 
     -- Clean up all data
@@ -155,7 +160,8 @@ end
 function PlayerSwapModule:Cleanup()
     -- If we have a base part, reset transparency & do data cleanup
     if BasePart then
-        BasePart.Transparency = 0
+        --BasePart.Transparency = 0
+        BasePart.Material = Enum.Material.Plastic
         BasePart = nil
     end
     
