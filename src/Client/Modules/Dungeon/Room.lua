@@ -21,6 +21,13 @@ function Room.new(data)
     return self
 end
 
+function Room:GetPosition()
+    return self._position
+end
+function Room:GetSize()
+    return self._size
+end
+
 function Room:Update()
     local min = self:GetPosition() - self:GetSize()/2 - Vector3.new(4,0,4)
     local max = self:GetPosition() + self:GetSize()/2 + Vector3.new(4,0,4)
@@ -35,10 +42,20 @@ function Room:Update()
 end
 
 function Room:Build()
-    workspace.Terrain:FillRegion(self._regions.Air, 4, Enum.Material.Air)
-    workspace.Terrain:FillRegion(self._regions.Floor, 4, DungeonSettings.FloorMaterial)
+    local material = self._roomType.Material or DungeonSettings.FloorMaterial
 
-    -- set up the part here
+    workspace.Terrain:FillRegion(self._regions.Air, 4, Enum.Material.Air)
+    workspace.Terrain:FillRegion(self._regions.Floor, 4, material)
+
+    if self._roomType.CanSwap then
+        -- If the room can be swapped, then add a part to control it
+        local p = Instance.new("Part")
+        p.CFrame = self._regions.Floor.CFrame
+        p.Size = self._regions.Floor.Size + Vector3.new(0, 2, 0)
+        p.CanCollide = false
+        p.Anchored = true
+        p.Parent = workspace
+    end
 end
 
 function Room:Unload()
