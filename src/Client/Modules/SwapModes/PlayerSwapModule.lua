@@ -136,7 +136,7 @@ function PlayerSwapModule:Release()
 
     -- Check if we're releasing over another part - if we are we want to swap
     local releasedOver = GetTarget()
-    if BasePart and releasedOver then
+    if BasePart and releasedOver and BasePart ~= releasedOver then
         -- Do the swap
         SwapControls.Swap(BasePart, releasedOver)
         

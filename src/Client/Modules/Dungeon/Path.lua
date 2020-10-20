@@ -70,9 +70,11 @@ function Path:Update()
     -- Determines if we need to add or remove from Z to hook the path into the room's edge
     local multiplier = (p1.Z > p2.Z) and 1 or -1
 
+    -- Note: There's some issues here with the values, so I'm adding some constants (-6, +4) to try to fix that;
+    --  might need to look into it again later on
     self._regions = {
-        self:_createRegion(p1 + Vector3.new(-s1.X/2, 0, -DungeonSettings.PathSize.Z/2), midpoint + Vector3.new(0, 0, DungeonSettings.PathSize.Z/2)),
-        self:_createRegion(midpoint + Vector3.new(-DungeonSettings.PathSize.X/2, 0, 0), p2 + Vector3.new(DungeonSettings.PathSize.X/2, 0, (s2.Z/2 - 20) * multiplier))
+        self:_createRegion(p1 + Vector3.new(-s1.X/2 - 6, 0, -DungeonSettings.PathSize.Z/2), midpoint + Vector3.new(0, 0, DungeonSettings.PathSize.Z/2)),
+        self:_createRegion(midpoint + Vector3.new(-DungeonSettings.PathSize.X/2, 0, 0), p2 + Vector3.new(DungeonSettings.PathSize.X/2, 0, s2.Z/2 * multiplier + 4*multiplier))
     }
 end
 
