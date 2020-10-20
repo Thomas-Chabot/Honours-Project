@@ -12,23 +12,28 @@ return {
     RoomTypes = {
         Start = {
             Material = nil, -- sets it to use the default
-            Effect = nil,
+            EffectType = nil,
             CanSwap = false
         },
         Goal = {
             Material = nil, -- sets it to use the default
-            Effect = nil,
+            EffectType = "Goal",
             CanSwap = false
         },
         Trap = {
             Material = Enum.Material.CrackedLava,
-            Effect = function(char) char.Humanoid:TakeDamage(100) end,
+            EffectType = "Trap",
             CanSwap = true
         },
         Safe = {
             Material = nil, -- sets it to use the default
-            Effect = nil,
+            EffectType = nil,
             CanSwap = true
         }
+    },
+
+    Effects = {
+        Trap = function(char) char.Humanoid:TakeDamage(100) end,
+        Goal = function(char) print(char, " Has reached the goal") end
     }
 }

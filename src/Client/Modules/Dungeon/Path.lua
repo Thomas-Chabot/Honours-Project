@@ -5,7 +5,7 @@
         2. Go from (Room2.X, Room1.Y) to Room2
     Each is generated as terrain
 ]]
-local DungeonSettings = require(script.Parent.DungeonSettings)
+local DungeonSettings
 local Path = { }
 Path.__index = Path
 
@@ -24,6 +24,10 @@ function Path.Between(room1, room2)
     self:Update()
 
     return self
+end
+
+function Path:Init()
+    DungeonSettings = self.Shared.DungeonSettings
 end
 
 function Path:Update()

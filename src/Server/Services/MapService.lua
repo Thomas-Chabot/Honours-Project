@@ -10,19 +10,16 @@
 local MapService = {Client = {}}
 print("MapService required")
 
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local CheckerboardPieces
+local DungeonSettings
 
 function MapService:Start()
-    local Objects = ReplicatedStorage:WaitForChild("Objects")
-    CheckerboardPieces = {
-        Objects:WaitForChild("BlackChecker"),
-        Objects:WaitForChild("RedChecker")
-    }
+
 end
 
 
 function MapService:Init()
+    DungeonSettings = self.Shared.DungeonSettings
+
     self:CacheClientMethod("GetLayout")
     self:RegisterClientEvent("SwapParts")
 end
@@ -37,20 +34,39 @@ end
 
 -- Returns the game layout.
 function MapService.Client:GetLayout()
-    local layout = { }
-    for row = 1,20 do
-        layout[row] = { }
-        for col = 1,20 do
-            local id = "Checker_" .. row .. "_" .. col
-            local checkerType = ((row + col) % 2) + 1
-            layout[row][col] = {
-                Id = id,
-                Type = CheckerboardPieces[checkerType]
+    return {
+        Rooms = {
+            {
+                Id = "Start",
+                Position = Vector3.new(-17.5, 0.5, 17.5),
+                Size = Vector3.new(30, 1, 30),
+                RoomType = DungeonSettings.RoomTypes.Start
+            },
+            {
+                Id = "A",
+                Position = Vector3.new(23, 0.5, 69),
+                Size = Vector3.new(10, 1, 10),
+                RoomType = DungeonSettings.RoomTypes.Trap
+            },
+            {
+                Id = "B",
+                Position = Vector3.new(54, 0.5, -4),
+                Size = Vector3.new(30, 1, 30),
+                RoomType = DungeonSettings.RoomTypes.Safe
+            },
+            {
+                Id = "Goal",
+                Position = Vector3.new(78, 0.5, 96),
+                Size = Vector3.new(30, 1, 30),
+                RoomType = DungeonSettings.RoomTypes.Goal
             }
-        end
-    end
-
-    return layout
+        },
+        Paths = {
+            {"A", "Goal"},
+            {"A", "B"},
+            {"Start", "A"}
+        }
+    }
 end
 
 
