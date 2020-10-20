@@ -10,18 +10,11 @@ local Path = { }
 Path.__index = Path
 
 function Path.Between(room1, room2)
-    -- Take the room with the smaller X coordinate as the first room;
-    -- This helps to make sure that ordering doesn't matter for setting up paths
-    if (room1:GetPosition().X < room2:GetPosition().X) then
-        return Path.Between(room2, room1)
-    end
-
-
     local self = setmetatable({
-        _rooms = { },
+        _rooms = {room1, room2},
         _regions = { }
     }, Path)
-    self:Update(room1, room2)
+    self:Update()
 
     return self
 end
@@ -43,17 +36,28 @@ end
 -- Changes a room on the path. Replaces the instance of the room "from"
 --  with the new room "to". Both should be Room instances.
 function Path:ChangeRoom(from, to)
+    local didChange = false
     for index,room in pairs(self._rooms) do
         if room == from then
             self._rooms[index] = to
+            didChange = true
         end
+    end
+
+    if didChange then
+        self:Update()
     end
 end
 
--- Updates the rooms that the path is connected to. Takes two Room objects.
-function Path:Update(newRoom1, newRoom2)
-    self._rooms = {newRoom1, newRoom2}
+-- Updates the region data for the path.
+function Path:Update()
+    -- Make sure that we don't leave any paths lying around after the change
+    self:Unload()
 
+    -- Verify that the rooms are in the correct order
+    self:_fixRooms()
+
+    -- Calculate the region data
     local p1 = self._rooms[1]:GetPosition()
     local p2 = self._rooms[2]:GetPosition()
 
@@ -67,8 +71,8 @@ function Path:Update(newRoom1, newRoom2)
     local multiplier = (p1.Z > p2.Z) and 1 or -1
 
     self._regions = {
-        self:_createRegion(p1 + Vector3.new(-s1.X/2, 0, 0), midpoint),
-        self:_createRegion(midpoint + Vector3.new(0, 0, DungeonSettings.PathSize.Z/2 * multiplier), p2 + Vector3.new(0, 0, s2.Z/2 * multiplier))
+        self:_createRegion(p1 + Vector3.new(-s1.X/2, 0, -DungeonSettings.PathSize.Z/2), midpoint + Vector3.new(0, 0, DungeonSettings.PathSize.Z/2)),
+        self:_createRegion(midpoint + Vector3.new(-DungeonSettings.PathSize.X/2, 0, 0), p2 + Vector3.new(DungeonSettings.PathSize.X/2, 0, (s2.Z/2 - 20) * multiplier))
     }
 end
 
@@ -86,10 +90,22 @@ function Path:Unload()
     end
 end
 
+-- Fixes rooms so that the room with the lower X coordinate is last.
+-- This helps to verify that paths will remain in the same position across swaps.
+function Path:_fixRooms()
+    local room1 = self._rooms[1]
+    local room2 = self._rooms[2]
+
+    -- If room1 has a lower X coordinate than room2, we swap the two around
+    if (room1:GetPosition().X < room2:GetPosition().X) then
+        self._rooms = {room2, room1}
+    end
+end
+
 function Path:_createRegion(from, to)
     -- Adding & Removing 5 from each axis to add in additional space for the terrain
-	local min = Vector3.new(math.min(from.X, to.X) - 5, -2, math.min(from.Z, to.Z) - 5)
-    local max = Vector3.new(math.max(from.X, to.X, min.X + 4) + 5, 2, math.max(from.Z, to.Z, min.Z + 4) + 5)
+	local min = Vector3.new(math.min(from.X, to.X), -2, math.min(from.Z, to.Z))
+    local max = Vector3.new(math.max(from.X, to.X, min.X + 4), 2, math.max(from.Z, to.Z, min.Z + 4))
     
     return {
         Floor = Region3.new(min, max):ExpandToGrid(4),

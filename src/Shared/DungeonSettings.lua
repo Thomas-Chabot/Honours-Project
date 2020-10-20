@@ -7,7 +7,7 @@ return {
     WallMaterial = Enum.Material.Sand,
 
     WallHeight = 30,
-    PathSize = Vector3.new(30, 1, 30),
+    PathSize = Vector3.new(10, 1, 10),
 
     RoomTypes = {
         Start = {

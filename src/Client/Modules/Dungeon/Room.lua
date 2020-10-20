@@ -125,6 +125,7 @@ function Room:_changePathsTo(otherRoom)
     for _,path in pairs(self._paths) do
         -- If the path is already hooked into the room, then don't update anything
         if path:IsInRoom(otherRoom) then
+            path:Update()
             continue
         end
 
@@ -136,7 +137,6 @@ end
 -- Rebuilds all paths connected to this room
 function Room:_rebuildPaths()
     for _,path in pairs(self._paths) do
-        path:Unload()
         path:Build()
     end
 end
