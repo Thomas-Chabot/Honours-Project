@@ -16,7 +16,10 @@ function Room.new(data)
         _size = data.Size,
         _roomType = data.RoomType,
 
-        _regions = { }
+        _regions = { },
+        _part = nil,
+
+        _paths = { }
     }, Room)
     self:Update()
 
@@ -32,6 +35,43 @@ function Room:GetPosition()
 end
 function Room:GetSize()
     return self._size
+end
+
+function Room:AddPath(path)
+    table.insert(self._paths, path)
+end
+
+function Room:SwapWith(otherRoom)
+    -- Clear up the two rooms
+    self:Unload()
+    otherRoom:Unload()
+
+    -- Swap the positions of each room
+    local myPosition = self:GetPosition()
+    local otherPosition = otherRoom:GetPosition()
+
+    self._position = otherPosition
+    otherRoom._position = myPosition
+
+    -- Update the Region3 data
+    self:Update()
+    otherRoom:Update()
+
+    -- Update the paths & associate with their new rooms
+    self:_changePathsTo(otherRoom)
+    otherRoom:_changePathsTo(self)
+
+    local paths = self._paths
+    self._paths = otherRoom._paths
+    otherRoom._paths = paths
+
+    -- Rebuild the paths
+    self:_rebuildPaths()
+    otherRoom:_rebuildPaths()
+
+    -- Rebuild the rooms
+    self:Build()
+    otherRoom:Build()
 end
 
 function Room:Update()
@@ -54,8 +94,13 @@ function Room:Build()
     workspace.Terrain:FillRegion(self._regions.Floor, 4, material)
 
     if self._roomType.CanSwap or self._roomType.EffectType then
+        if self._part then
+            return
+        end
+
         -- If the room can be swapped, then add a part to control it
         local p = Instance.new("Part")
+        p.Name = self.Id
         p.CFrame = self._regions.Floor.CFrame + Vector3.new(0,2,0)
         p.Size = self._regions.Floor.Size + Vector3.new(0, 2, 0)
         p.CanCollide = false
@@ -66,11 +111,34 @@ function Room:Build()
         if self._roomType.EffectType then
             p.Touched:Connect(function(hit) self:_onTouch(hit) end)
         end
+
+        self._part = p
     end
 end
 
 function Room:Unload()
     workspace.Terrain:FillRegion(self._regions.Air, 4, DungeonSettings.WallMaterial)
+end
+
+-- Updates the path associated to this room to being associated with another room.
+function Room:_changePathsTo(otherRoom)
+    for _,path in pairs(self._paths) do
+        -- If the path is already hooked into the room, then don't update anything
+        if path:IsInRoom(otherRoom) then
+            continue
+        end
+
+        -- Otherwise, change out our room for the other room
+        path:ChangeRoom(self, otherRoom)
+    end
+end
+
+-- Rebuilds all paths connected to this room
+function Room:_rebuildPaths()
+    for _,path in pairs(self._paths) do
+        path:Unload()
+        path:Build()
+    end
 end
 
 function Room:_onTouch(hit)

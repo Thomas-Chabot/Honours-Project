@@ -18,10 +18,10 @@ function Path.Between(room1, room2)
 
 
     local self = setmetatable({
-        _rooms = {room1, room2},
+        _rooms = { },
         _regions = { }
     }, Path)
-    self:Update()
+    self:Update(room1, room2)
 
     return self
 end
@@ -30,7 +30,30 @@ function Path:Init()
     DungeonSettings = self.Shared.DungeonSettings
 end
 
-function Path:Update()
+-- Checks if the path is bounded to the given room. Takes a Room object.
+function Path:IsInRoom(room)
+    for _,r in pairs(self._rooms) do
+        if r == room then
+            return true
+        end
+    end
+    return false
+end
+
+-- Changes a room on the path. Replaces the instance of the room "from"
+--  with the new room "to". Both should be Room instances.
+function Path:ChangeRoom(from, to)
+    for index,room in pairs(self._rooms) do
+        if room == from then
+            self._rooms[index] = to
+        end
+    end
+end
+
+-- Updates the rooms that the path is connected to. Takes two Room objects.
+function Path:Update(newRoom1, newRoom2)
+    self._rooms = {newRoom1, newRoom2}
+
     local p1 = self._rooms[1]:GetPosition()
     local p2 = self._rooms[2]:GetPosition()
 

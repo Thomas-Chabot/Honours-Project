@@ -56,7 +56,7 @@ function MapService.Client:GetLayout()
             },
             {
                 Id = "Goal",
-                Position = Vector3.new(78, 0.5, 96),
+                Position = Vector3.new(78, 0.5, 104),
                 Size = Vector3.new(30, 1, 30),
                 RoomType = DungeonSettings.RoomTypes.Goal
             }

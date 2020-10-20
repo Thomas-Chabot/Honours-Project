@@ -59,6 +59,8 @@ function PlayerSwapModule:Init()
     Recolor = self.Modules.Recolor
     SwapControls = self.Modules.SwapInternal.SwapControls
     SwapService = self.Services.SwapService
+
+    self.Swapped = self.Shared.Signal.new()
 end
 
 -- Activates the player swap module, hooks up events
@@ -143,6 +145,7 @@ function PlayerSwapModule:Release()
 
         -- Feed the swap through to the server
         -- If the server returns false, it means the movement is invalid & has to be reversed
+        self.Swapped:Fire(basePart, releasedOver)
         local valid = SwapService:Swap(basePart.Name, releasedOver.Name)
         if not valid then
             -- Swap the BasePart and releasedOver parts back -- reversing the swap

@@ -18,6 +18,7 @@ local CameraController
 local DungeonSettings
 local Room
 local Path
+local Swap
 
 local Rooms
 local SwappablesFolder
@@ -37,6 +38,9 @@ function MapController:Start()
     CameraController:ConnectEvent("CameraModeChanged", function()
         self:OnViewModeChanged()
     end)
+    Swap.Swapped:Connect(function(p1, p2)
+        self:SwapRooms(p1, p2)
+    end)
 end
 
 
@@ -45,6 +49,7 @@ function MapController:Init()
     DungeonSettings = self.Shared.DungeonSettings
     Room = self.Modules.Dungeon.Room
     Path = self.Modules.Dungeon.Path
+    Swap = self.Controllers.SwapController
 end
 
 function MapController:Build() 
@@ -78,6 +83,9 @@ function MapController:Build()
 
         local path = Path.Between(r1, r2)
         path:Build()
+
+        r1:AddPath(path)
+        r2:AddPath(path)
     end
 
     -- Step 4) Build the rooms
@@ -89,6 +97,15 @@ end
 function MapController:OnViewModeChanged()
     local viewMode = CameraController:GetCameraMode()
     toggleTag("Swappable", viewMode == "Overhead")
+end
+
+-- Swaps two rooms.
+function MapController:SwapRooms(swap1, swap2)
+	local room1 = Rooms[swap1.Name]
+    local room2 = Rooms[swap2.Name]
+    assert(room1 ~= nil and room2 ~= nil, "Either room1 or room2 could not be found: Room 1 = " .. swap1.Name .. " | Room 2 = " .. swap2.Name)
+    
+	room1:SwapWith(room2)
 end
 
 
