@@ -23,12 +23,14 @@ return {
         Trap = {
             Material = Enum.Material.CrackedLava,
             EffectType = "Trap",
-            CanSwap = true
+            CanSwap = true,
+            PartDecal = 5853527849
         },
         Safe = {
             Material = nil, -- sets it to use the default
             EffectType = nil,
-            CanSwap = true
+            CanSwap = true,
+            PartDecal = 5853574492
         }
     },
 

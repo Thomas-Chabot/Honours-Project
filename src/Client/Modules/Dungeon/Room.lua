@@ -99,10 +99,11 @@ function Room:Build()
         end
 
         -- If the room can be swapped, then add a part to control it
+        local floor = self._regions.Floor
         local p = Instance.new("Part")
         p.Name = self.Id
-        p.CFrame = self._regions.Floor.CFrame + Vector3.new(0,2,0)
-        p.Size = self._regions.Floor.Size + Vector3.new(0, 2, 0)
+        p.Position = Vector3.new(floor.CFrame.X, floor.CFrame.Y + floor.Size.Y/2 + 2, floor.CFrame.Z)
+        p.Size = Vector3.new(floor.Size.X, 1, floor.Size.Z)
         p.CanCollide = false
         p.Anchored = true
         p.Transparency = 1
@@ -110,6 +111,17 @@ function Room:Build()
 
         if self._roomType.EffectType then
             p.Touched:Connect(function(hit) self:_onTouch(hit) end)
+        end
+
+        -- If it has a decal, give it the decal
+        local decalId = self._roomType.PartDecal
+        if decalId then
+            local d = Instance.new("Decal")
+            d.Face = Enum.NormalId.Top
+            d.Transparency = 1
+            d.Name = "SwapDecal"
+            d.Texture = "rbxassetid://" .. decalId
+            d.Parent = p
         end
 
         self._part = p

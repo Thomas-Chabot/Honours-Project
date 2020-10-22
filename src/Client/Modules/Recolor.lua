@@ -58,7 +58,7 @@ function Recolor.SetTarget(target)
 
     -- change color
     target.BrickColor = TargetColor
-    target.Transparency = 0
+    --target.Transparency = 0
 
     -- if it's a union, we want to make sure it becomes colored
     if target:IsA("UnionOperation") then
@@ -69,6 +69,11 @@ end
 -- Retrieves the original color of the current target
 function Recolor.GetColor()
     return currentTarget and currentTarget.Color
+end
+
+-- Retrieves the stored transparency of the target
+function Recolor.GetTransparency()
+    return currentTarget and currentTarget.Transparency
 end
 
 -- Enables the Recolor system, allowing objects to be colored/highlighted.
