@@ -21,7 +21,7 @@ function Recolor.ResetTarget()
     
     local target = currentTarget.Target
     target.BrickColor = currentTarget.Color
-    target.Transparency = currentTarget.Transparency
+    currentTarget.Object.Transparency = currentTarget.Transparency
 
     if target:IsA("UnionOperation") then
         target.UsePartColor = currentTarget.UsesPartColor
@@ -49,16 +49,20 @@ function Recolor.SetTarget(target)
 
     -- store the part data
     local usesPartColor = target:IsA("UnionOperation") and target.UsePartColor or false
+    local decal = target:FindFirstChildOfClass("Decal")
+    local obj = decal or target
+
     currentTarget = {
         Target = target,
         Color = target.BrickColor,
-        Transparency = target.Transparency,
-        UsesPartColor = usesPartColor
+        Transparency = obj.Transparency,
+        UsesPartColor = usesPartColor,
+        Object = obj
     }
 
     -- change color
     target.BrickColor = TargetColor
-    --target.Transparency = 0
+    obj.Transparency = 0
 
     -- if it's a union, we want to make sure it becomes colored
     if target:IsA("UnionOperation") then
