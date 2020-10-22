@@ -62,7 +62,7 @@ function Recolor.SetTarget(target)
 
     -- change color
     target.BrickColor = TargetColor
-    obj.Transparency = 0
+    obj.Transparency = obj:IsA("Decal") and 0.65 or 0
 
     -- if it's a union, we want to make sure it becomes colored
     if target:IsA("UnionOperation") then
