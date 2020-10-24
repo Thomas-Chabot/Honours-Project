@@ -15,8 +15,8 @@ local colorRoomMap = {
 
 local function getConnectingRooms(path)
 	return {
-		path.Room1.Value.Name,
-		path.Room2.Value.Name
+		path.Room1.Value,
+		path.Room2.Value
 	}
 end
 

@@ -2,14 +2,14 @@
 	<Meta name="ExplicitAutoJoints">true</Meta>
 	<External>null</External>
 	<External>nil</External>
-	<Item class="Folder" referent="RBXC1A47F9D58CF4F32BB7D9B6581143CC4">
+	<Item class="Folder" referent="RBXD37CC30B7F7946CB80D91D8B482FD5E2">
 		<Properties>
 			<BinaryString name="AttributesSerialize"></BinaryString>
 			<string name="Name">Maps</string>
 			<int64 name="SourceAssetId">-1</int64>
 			<BinaryString name="Tags"></BinaryString>
 		</Properties>
-		<Item class="Model" referent="RBX3B21DC60F92A4CB28BAC2B93D80CB5AE">
+		<Item class="Model" referent="RBXAF8E46EB08C7465FAE41A7FE5E278554">
 			<Properties>
 				<BinaryString name="AttributesSerialize"></BinaryString>
 				<token name="LevelOfDetail">0</token>
@@ -52,7 +52,7 @@
 				<int64 name="SourceAssetId">-1</int64>
 				<BinaryString name="Tags"></BinaryString>
 			</Properties>
-			<Item class="Model" referent="RBX941B60CFCA08411589928D9E40E66E1F">
+			<Item class="Model" referent="RBX1BF227DD958E4BAABC33220C34DBF242">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<token name="LevelOfDetail">0</token>
@@ -95,7 +95,7 @@
 					<int64 name="SourceAssetId">-1</int64>
 					<BinaryString name="Tags"></BinaryString>
 				</Properties>
-				<Item class="Part" referent="RBXE20CA9FDF23B4E7E9F8BB69431D70E45">
+				<Item class="Part" referent="RBX6875DFBE5DBF42B788919AEB94E79411">
 					<Properties>
 						<bool name="Anchored">false</bool>
 						<BinaryString name="AttributesSerialize"></BinaryString>
@@ -171,26 +171,26 @@
 							<Z>2</Z>
 						</Vector3>
 					</Properties>
-					<Item class="ObjectValue" referent="RBXD568B1EE6A484530B672A2A027ECC98B">
+					<Item class="StringValue" referent="RBX02239EDF8D084BB0AFDE607004A79192">
 						<Properties>
 							<BinaryString name="AttributesSerialize"></BinaryString>
 							<string name="Name">Room1</string>
 							<int64 name="SourceAssetId">-1</int64>
 							<BinaryString name="Tags"></BinaryString>
-							<Ref name="Value">RBX8063CDB677FB44BE96178281C7CB5C4C</Ref>
+							<string name="Value">B</string>
 						</Properties>
 					</Item>
-					<Item class="ObjectValue" referent="RBX553D842982C14EDDA9855FAC8BBE16D1">
+					<Item class="StringValue" referent="RBXF771020C964E4354A398A3F8F813837A">
 						<Properties>
 							<BinaryString name="AttributesSerialize"></BinaryString>
 							<string name="Name">Room2</string>
 							<int64 name="SourceAssetId">-1</int64>
 							<BinaryString name="Tags"></BinaryString>
-							<Ref name="Value">RBX5B8CEA929D9A4B2486F7ED991801FC0B</Ref>
+							<string name="Value">Start</string>
 						</Properties>
 					</Item>
 				</Item>
-				<Item class="Part" referent="RBX1F518933A5554957A233C1D1D2374134">
+				<Item class="Part" referent="RBX674556E5FC6740A2BC66C8B5BB8A4331">
 					<Properties>
 						<bool name="Anchored">false</bool>
 						<BinaryString name="AttributesSerialize"></BinaryString>
@@ -266,26 +266,26 @@
 							<Z>2</Z>
 						</Vector3>
 					</Properties>
-					<Item class="ObjectValue" referent="RBXF3F96790A0574D2692158A21BA7C1F79">
-						<Properties>
-							<BinaryString name="AttributesSerialize"></BinaryString>
-							<string name="Name">Room2</string>
-							<int64 name="SourceAssetId">-1</int64>
-							<BinaryString name="Tags"></BinaryString>
-							<Ref name="Value">RBXC92AA7E94350452FAEF996EF60179BC4</Ref>
-						</Properties>
-					</Item>
-					<Item class="ObjectValue" referent="RBX1CCE488841D24FDDB16B1536D8B06F64">
+					<Item class="StringValue" referent="RBX5E8EFC6325DD4EC186747630A7862407">
 						<Properties>
 							<BinaryString name="AttributesSerialize"></BinaryString>
 							<string name="Name">Room1</string>
 							<int64 name="SourceAssetId">-1</int64>
 							<BinaryString name="Tags"></BinaryString>
-							<Ref name="Value">RBXA81915A3617A4500B40EAF8AFBB57861</Ref>
+							<string name="Value">E</string>
+						</Properties>
+					</Item>
+					<Item class="StringValue" referent="RBXDC08FA03CF0741B5988F005B78162379">
+						<Properties>
+							<BinaryString name="AttributesSerialize"></BinaryString>
+							<string name="Name">Room2</string>
+							<int64 name="SourceAssetId">-1</int64>
+							<BinaryString name="Tags"></BinaryString>
+							<string name="Value">D</string>
 						</Properties>
 					</Item>
 				</Item>
-				<Item class="Part" referent="RBX8E02494C3DFF473997719CA15E08A5FD">
+				<Item class="Part" referent="RBX177B33B9DF534A5F9488B159AB4B6147">
 					<Properties>
 						<bool name="Anchored">false</bool>
 						<BinaryString name="AttributesSerialize"></BinaryString>
@@ -361,26 +361,26 @@
 							<Z>2</Z>
 						</Vector3>
 					</Properties>
-					<Item class="ObjectValue" referent="RBX4B882543811B4FB091164937723FC639">
-						<Properties>
-							<BinaryString name="AttributesSerialize"></BinaryString>
-							<string name="Name">Room2</string>
-							<int64 name="SourceAssetId">-1</int64>
-							<BinaryString name="Tags"></BinaryString>
-							<Ref name="Value">RBX9E727E4F9EE0481FA6A52672E62A9BF9</Ref>
-						</Properties>
-					</Item>
-					<Item class="ObjectValue" referent="RBX45691F20D82E43EF99D16182304C0282">
+					<Item class="StringValue" referent="RBX984D277B70914518BA77484838D76261">
 						<Properties>
 							<BinaryString name="AttributesSerialize"></BinaryString>
 							<string name="Name">Room1</string>
 							<int64 name="SourceAssetId">-1</int64>
 							<BinaryString name="Tags"></BinaryString>
-							<Ref name="Value">RBXF5C2646510004BA98A956FFFED20AD87</Ref>
+							<string name="Value">H</string>
+						</Properties>
+					</Item>
+					<Item class="StringValue" referent="RBX9A1F238FE969470D8DA33A1F6ADE097F">
+						<Properties>
+							<BinaryString name="AttributesSerialize"></BinaryString>
+							<string name="Name">Room2</string>
+							<int64 name="SourceAssetId">-1</int64>
+							<BinaryString name="Tags"></BinaryString>
+							<string name="Value">G</string>
 						</Properties>
 					</Item>
 				</Item>
-				<Item class="Part" referent="RBX6FA9FDAD055543EE9A2F950C229FD9CB">
+				<Item class="Part" referent="RBX6F1553EDA0B44F1AA6F734A96EEA4512">
 					<Properties>
 						<bool name="Anchored">false</bool>
 						<BinaryString name="AttributesSerialize"></BinaryString>
@@ -456,26 +456,26 @@
 							<Z>35</Z>
 						</Vector3>
 					</Properties>
-					<Item class="ObjectValue" referent="RBXD8FF3054667F456392BAFBC7C93E64DD">
-						<Properties>
-							<BinaryString name="AttributesSerialize"></BinaryString>
-							<string name="Name">Room2</string>
-							<int64 name="SourceAssetId">-1</int64>
-							<BinaryString name="Tags"></BinaryString>
-							<Ref name="Value">RBXC92AA7E94350452FAEF996EF60179BC4</Ref>
-						</Properties>
-					</Item>
-					<Item class="ObjectValue" referent="RBX0E2AB154B0A246E6A16F000E9DB4773B">
+					<Item class="StringValue" referent="RBX528B105351314089B5B417F82B038E21">
 						<Properties>
 							<BinaryString name="AttributesSerialize"></BinaryString>
 							<string name="Name">Room1</string>
 							<int64 name="SourceAssetId">-1</int64>
 							<BinaryString name="Tags"></BinaryString>
-							<Ref name="Value">RBX5B8CEA929D9A4B2486F7ED991801FC0B</Ref>
+							<string name="Value">B</string>
+						</Properties>
+					</Item>
+					<Item class="StringValue" referent="RBX761596ACAA6A47ECB3C4BD8011AAC624">
+						<Properties>
+							<BinaryString name="AttributesSerialize"></BinaryString>
+							<string name="Name">Room2</string>
+							<int64 name="SourceAssetId">-1</int64>
+							<BinaryString name="Tags"></BinaryString>
+							<string name="Value">E</string>
 						</Properties>
 					</Item>
 				</Item>
-				<Item class="Part" referent="RBX0AE393453D5E476F9C6AEA265F9EC2A4">
+				<Item class="Part" referent="RBXFCA675627A7F4CC9ADE5521FCE354A2F">
 					<Properties>
 						<bool name="Anchored">false</bool>
 						<BinaryString name="AttributesSerialize"></BinaryString>
@@ -551,26 +551,26 @@
 							<Z>35</Z>
 						</Vector3>
 					</Properties>
-					<Item class="ObjectValue" referent="RBXA0490799D44D4F0292837155C1B9BB5D">
-						<Properties>
-							<BinaryString name="AttributesSerialize"></BinaryString>
-							<string name="Name">Room2</string>
-							<int64 name="SourceAssetId">-1</int64>
-							<BinaryString name="Tags"></BinaryString>
-							<Ref name="Value">RBX0C6461979CF049EFB7C9DDF844EA5EFA</Ref>
-						</Properties>
-					</Item>
-					<Item class="ObjectValue" referent="RBXFEE59CCA704A40DF9EEC7D9DF8A14231">
+					<Item class="StringValue" referent="RBX60028976A6B24B5180FA55A6B8749183">
 						<Properties>
 							<BinaryString name="AttributesSerialize"></BinaryString>
 							<string name="Name">Room1</string>
 							<int64 name="SourceAssetId">-1</int64>
 							<BinaryString name="Tags"></BinaryString>
-							<Ref name="Value">RBX42C1198C55474FE28EC971CCABD855BD</Ref>
+							<string name="Value">Goal</string>
+						</Properties>
+					</Item>
+					<Item class="StringValue" referent="RBXA1D2C81E5B254E51B83CD1DE5E23E450">
+						<Properties>
+							<BinaryString name="AttributesSerialize"></BinaryString>
+							<string name="Name">Room2</string>
+							<int64 name="SourceAssetId">-1</int64>
+							<BinaryString name="Tags"></BinaryString>
+							<string name="Value">F</string>
 						</Properties>
 					</Item>
 				</Item>
-				<Item class="Part" referent="RBXE08803C5C3F249BEADB2C47CE3DD407B">
+				<Item class="Part" referent="RBXDB7D335AAEB7458EBE2EEC721EF482F2">
 					<Properties>
 						<bool name="Anchored">false</bool>
 						<BinaryString name="AttributesSerialize"></BinaryString>
@@ -646,26 +646,26 @@
 							<Z>35</Z>
 						</Vector3>
 					</Properties>
-					<Item class="ObjectValue" referent="RBX57B92032CF55462CAB977130C062A801">
-						<Properties>
-							<BinaryString name="AttributesSerialize"></BinaryString>
-							<string name="Name">Room2</string>
-							<int64 name="SourceAssetId">-1</int64>
-							<BinaryString name="Tags"></BinaryString>
-							<Ref name="Value">RBXE8C014672FD247D7A8F8209F9E77BFE0</Ref>
-						</Properties>
-					</Item>
-					<Item class="ObjectValue" referent="RBX19FFF8B7EC354B2A85B1DD9858879107">
+					<Item class="StringValue" referent="RBX705092CDB2484132A6BE5D4D05175A80">
 						<Properties>
 							<BinaryString name="AttributesSerialize"></BinaryString>
 							<string name="Name">Room1</string>
 							<int64 name="SourceAssetId">-1</int64>
 							<BinaryString name="Tags"></BinaryString>
-							<Ref name="Value">RBX0C6461979CF049EFB7C9DDF844EA5EFA</Ref>
+							<string name="Value">I</string>
+						</Properties>
+					</Item>
+					<Item class="StringValue" referent="RBX3F7FC239110544948770D84375E2FF75">
+						<Properties>
+							<BinaryString name="AttributesSerialize"></BinaryString>
+							<string name="Name">Room2</string>
+							<int64 name="SourceAssetId">-1</int64>
+							<BinaryString name="Tags"></BinaryString>
+							<string name="Value">F</string>
 						</Properties>
 					</Item>
 				</Item>
-				<Item class="Part" referent="RBX1577E91426F64BEC8EDC63219727CB01">
+				<Item class="Part" referent="RBX206C628511704ABD87316D19656CA7BD">
 					<Properties>
 						<bool name="Anchored">false</bool>
 						<BinaryString name="AttributesSerialize"></BinaryString>
@@ -741,26 +741,26 @@
 							<Z>35</Z>
 						</Vector3>
 					</Properties>
-					<Item class="ObjectValue" referent="RBX833DD559BC92407682E1E07DBAE6A00E">
-						<Properties>
-							<BinaryString name="AttributesSerialize"></BinaryString>
-							<string name="Name">Room2</string>
-							<int64 name="SourceAssetId">-1</int64>
-							<BinaryString name="Tags"></BinaryString>
-							<Ref name="Value">RBXF5C2646510004BA98A956FFFED20AD87</Ref>
-						</Properties>
-					</Item>
-					<Item class="ObjectValue" referent="RBXF76616A8BA724777AD846A22F81F266E">
+					<Item class="StringValue" referent="RBX8BBC508AC8A048089DDD04A3FB705DF0">
 						<Properties>
 							<BinaryString name="AttributesSerialize"></BinaryString>
 							<string name="Name">Room1</string>
 							<int64 name="SourceAssetId">-1</int64>
 							<BinaryString name="Tags"></BinaryString>
-							<Ref name="Value">RBXA81915A3617A4500B40EAF8AFBB57861</Ref>
+							<string name="Value">G</string>
+						</Properties>
+					</Item>
+					<Item class="StringValue" referent="RBX6448EB44C0614BE3B3616BF9A14A8DC9">
+						<Properties>
+							<BinaryString name="AttributesSerialize"></BinaryString>
+							<string name="Name">Room2</string>
+							<int64 name="SourceAssetId">-1</int64>
+							<BinaryString name="Tags"></BinaryString>
+							<string name="Value">D</string>
 						</Properties>
 					</Item>
 				</Item>
-				<Item class="Part" referent="RBX006B1BC1CBEA4044A21E1619B983B125">
+				<Item class="Part" referent="RBXAEB3048FF939478798E1E85F82218EBA">
 					<Properties>
 						<bool name="Anchored">false</bool>
 						<BinaryString name="AttributesSerialize"></BinaryString>
@@ -836,27 +836,27 @@
 							<Z>2</Z>
 						</Vector3>
 					</Properties>
-					<Item class="ObjectValue" referent="RBX63B46CB08D14454CB4A9489474C4DFF9">
-						<Properties>
-							<BinaryString name="AttributesSerialize"></BinaryString>
-							<string name="Name">Room2</string>
-							<int64 name="SourceAssetId">-1</int64>
-							<BinaryString name="Tags"></BinaryString>
-							<Ref name="Value">RBXE8C014672FD247D7A8F8209F9E77BFE0</Ref>
-						</Properties>
-					</Item>
-					<Item class="ObjectValue" referent="RBX6BF6428FBDE9413A89B05007AE8F703B">
+					<Item class="StringValue" referent="RBXDE48752761B6418EBCF4AF0FA224B727">
 						<Properties>
 							<BinaryString name="AttributesSerialize"></BinaryString>
 							<string name="Name">Room1</string>
 							<int64 name="SourceAssetId">-1</int64>
 							<BinaryString name="Tags"></BinaryString>
-							<Ref name="Value">RBX9E727E4F9EE0481FA6A52672E62A9BF9</Ref>
+							<string name="Value">I</string>
+						</Properties>
+					</Item>
+					<Item class="StringValue" referent="RBXBA4EE8BC74394E48AB0BF4EF56D3A31C">
+						<Properties>
+							<BinaryString name="AttributesSerialize"></BinaryString>
+							<string name="Name">Room2</string>
+							<int64 name="SourceAssetId">-1</int64>
+							<BinaryString name="Tags"></BinaryString>
+							<string name="Value">H</string>
 						</Properties>
 					</Item>
 				</Item>
 			</Item>
-			<Item class="Model" referent="RBX02DA8ABD9F48476690BAFA0E51D07908">
+			<Item class="Model" referent="RBXA9DD6D1E0C8B4663B8812F6C2C0BE39A">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<token name="LevelOfDetail">0</token>
@@ -899,7 +899,7 @@
 					<int64 name="SourceAssetId">-1</int64>
 					<BinaryString name="Tags"></BinaryString>
 				</Properties>
-				<Item class="Part" referent="RBX5B8CEA929D9A4B2486F7ED991801FC0B">
+				<Item class="Part" referent="RBX9C0A7ADA2B6C40A1B3849D2DCDD0EF32">
 					<Properties>
 						<bool name="Anchored">false</bool>
 						<BinaryString name="AttributesSerialize"></BinaryString>
@@ -976,7 +976,7 @@
 						</Vector3>
 					</Properties>
 				</Item>
-				<Item class="Part" referent="RBX42C1198C55474FE28EC971CCABD855BD">
+				<Item class="Part" referent="RBX77068BAACB3340A2A4C2F6CABB263A90">
 					<Properties>
 						<bool name="Anchored">false</bool>
 						<BinaryString name="AttributesSerialize"></BinaryString>
@@ -1053,7 +1053,7 @@
 						</Vector3>
 					</Properties>
 				</Item>
-				<Item class="Part" referent="RBX0C6461979CF049EFB7C9DDF844EA5EFA">
+				<Item class="Part" referent="RBX0FCFE9110135450FB3518847B019A142">
 					<Properties>
 						<bool name="Anchored">false</bool>
 						<BinaryString name="AttributesSerialize"></BinaryString>
@@ -1130,7 +1130,7 @@
 						</Vector3>
 					</Properties>
 				</Item>
-				<Item class="Part" referent="RBXC92AA7E94350452FAEF996EF60179BC4">
+				<Item class="Part" referent="RBX93EC405F36C041DA9F8D257C90648E9C">
 					<Properties>
 						<bool name="Anchored">false</bool>
 						<BinaryString name="AttributesSerialize"></BinaryString>
@@ -1207,7 +1207,7 @@
 						</Vector3>
 					</Properties>
 				</Item>
-				<Item class="Part" referent="RBXA81915A3617A4500B40EAF8AFBB57861">
+				<Item class="Part" referent="RBX2A299B53D71D407EAFDACBDDABA23AD3">
 					<Properties>
 						<bool name="Anchored">false</bool>
 						<BinaryString name="AttributesSerialize"></BinaryString>
@@ -1284,7 +1284,7 @@
 						</Vector3>
 					</Properties>
 				</Item>
-				<Item class="Part" referent="RBXF5C2646510004BA98A956FFFED20AD87">
+				<Item class="Part" referent="RBXC19ACD58BDA44E81A356F3B613EEE6F6">
 					<Properties>
 						<bool name="Anchored">false</bool>
 						<BinaryString name="AttributesSerialize"></BinaryString>
@@ -1361,7 +1361,7 @@
 						</Vector3>
 					</Properties>
 				</Item>
-				<Item class="Part" referent="RBX9E727E4F9EE0481FA6A52672E62A9BF9">
+				<Item class="Part" referent="RBXDB968BADB310407EA2F078E730C5C528">
 					<Properties>
 						<bool name="Anchored">false</bool>
 						<BinaryString name="AttributesSerialize"></BinaryString>
@@ -1438,7 +1438,7 @@
 						</Vector3>
 					</Properties>
 				</Item>
-				<Item class="Part" referent="RBXE8C014672FD247D7A8F8209F9E77BFE0">
+				<Item class="Part" referent="RBX0280B943261045BBAF975A4BD42B167C">
 					<Properties>
 						<bool name="Anchored">false</bool>
 						<BinaryString name="AttributesSerialize"></BinaryString>
@@ -1515,7 +1515,7 @@
 						</Vector3>
 					</Properties>
 				</Item>
-				<Item class="Part" referent="RBX8063CDB677FB44BE96178281C7CB5C4C">
+				<Item class="Part" referent="RBX244748CF4BBE46C0957EDC8EF445AC2D">
 					<Properties>
 						<bool name="Anchored">false</bool>
 						<BinaryString name="AttributesSerialize"></BinaryString>
