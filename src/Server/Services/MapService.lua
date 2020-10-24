@@ -11,6 +11,7 @@ local MapService = {Client = {}}
 print("MapService required")
 
 local DungeonSettings
+local MapLoader
 
 function MapService:Start()
 
@@ -19,6 +20,7 @@ end
 
 function MapService:Init()
     DungeonSettings = self.Shared.DungeonSettings
+    MapLoader = self.Modules.MapLoader
 
     self:CacheClientMethod("GetLayout")
     self:RegisterClientEvent("SwapParts")
@@ -34,7 +36,7 @@ end
 
 -- Returns the game layout.
 function MapService.Client:GetLayout()
-    return {
+    --[[return {
         Rooms = {
             {
                 Id = "Start",
@@ -66,7 +68,9 @@ function MapService.Client:GetLayout()
             {"A", "B"},
             {"Start", "A"}
         }
-    }
+    }]]
+
+    return MapLoader.LoadLevel(1)
 end
 
 

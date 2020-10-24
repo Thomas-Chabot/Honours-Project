@@ -14,7 +14,7 @@ function Room.new(data)
         
         _position = data.Position,
         _size = data.Size,
-        _roomType = data.RoomType,
+        _roomType = DungeonSettings.RoomTypes[data.RoomType],
 
         _regions = { },
         _part = nil,
