@@ -14,7 +14,7 @@ local PlayerSwapModule = {}
 local CollectionService = game:GetService("CollectionService")
 local RunService = game:GetService("RunService")
 
-local Maid, Input, Mouse, Recolor, SwapService, SwapControls
+local Maid, Input, Mouse, Recolor, SwapService, SwapControls, DungeonSettings
 local maid
 
 local BasePart, ClonedPart
@@ -59,6 +59,9 @@ function PlayerSwapModule:Init()
     Recolor = self.Modules.Recolor
     SwapControls = self.Modules.SwapInternal.SwapControls
     SwapService = self.Services.SwapService
+    DungeonSettings = self.Shared.DungeonSettings
+
+    self.Swapped = self.Shared.Signal.new()
 end
 
 -- Activates the player swap module, hooks up events
@@ -92,7 +95,7 @@ function PlayerSwapModule:Update()
     -- If we have a cloned part, move it around
     if ClonedPart then
         local ray = Mouse:GetRay(1)
-        local targetHeight = 10
+        local targetHeight = DungeonSettings.WallHeight + 4
 
         -- Determines the position to set the part so that it follows the mouse & sticks at a given height
         ClonedPart.Position = ray.Origin + ray.Direction.unit * ((ray.Origin.Y - targetHeight)/math.abs(ray.Direction.unit.Y))
@@ -120,7 +123,13 @@ function PlayerSwapModule:Pickup(part)
 
     --BasePart.Transparency = 0.7
     BasePart.Material = Enum.Material.ForceField
-    ClonedPart.Transparency = 0.2
+    local decal = ClonedPart:FindFirstChildOfClass("Decal") 
+    if decal then
+        ClonedPart.Transparency = Recolor.GetTransparency()
+        decal.Transparency = 0.2
+    else
+        ClonedPart.Transparency = 0.2
+    end
     ClonedPart.BrickColor = Recolor.GetColor()
 end
 
@@ -134,7 +143,7 @@ function PlayerSwapModule:Release()
 
     -- Check if we're releasing over another part - if we are we want to swap
     local releasedOver = GetTarget()
-    if BasePart and releasedOver then
+    if BasePart and releasedOver and BasePart ~= releasedOver then
         -- Do the swap
         SwapControls.Swap(BasePart, releasedOver)
         
@@ -143,6 +152,7 @@ function PlayerSwapModule:Release()
 
         -- Feed the swap through to the server
         -- If the server returns false, it means the movement is invalid & has to be reversed
+        self.Swapped:Fire(basePart, releasedOver)
         local valid = SwapService:Swap(basePart.Name, releasedOver.Name)
         if not valid then
             -- Swap the BasePart and releasedOver parts back -- reversing the swap

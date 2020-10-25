@@ -21,17 +21,18 @@ function ServerSwapModule:Init()
     Maid = self.Shared.Maid
     SwapControls = self.Modules.SwapInternal.SwapControls
     SwapService = self.Services.SwapService
+    self.Swapped = self.Shared.Signal.new()
 end
 
 -- Activates the module. Adds event listeners for the server.
 function ServerSwapModule:Activate()
     maid = Maid.new()
     maid:GiveTask(SwapService.Swapped:Connect(function(part1, part2)
-        local p1 = workspace:FindFirstChild(part1)
-        local p2 = workspace:FindFirstChild(part2)
+        local p1 = workspace.Swappables:FindFirstChild(part1)
+        local p2 = workspace.Swappables:FindFirstChild(part2)
 
         SwapControls.Swap(p1, p2)
-        print(part1, part2, " swapped")
+        self.Swapped:Fire(p1, p2)
     end))
 end
 
