@@ -18,7 +18,8 @@ return {
         Goal = {
             Material = nil, -- sets it to use the default
             EffectType = "Goal",
-            CanSwap = false
+            CanSwap = false,
+            Material = Enum.Material.Grass
         },
         Trap = {
             Material = Enum.Material.CrackedLava,

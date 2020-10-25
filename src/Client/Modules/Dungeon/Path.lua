@@ -33,6 +33,11 @@ function Path:IsInRoom(room)
     return false
 end
 
+-- Returns the room that the path is connected to that is not a given room.
+function Path:GetOtherRoom(room)
+    return (self._rooms[1] == room) and self._rooms[2] or self._rooms[1]
+end
+
 -- Changes a room on the path. Replaces the instance of the room "from"
 --  with the new room "to". Both should be Room instances.
 function Path:ChangeRoom(from, to)

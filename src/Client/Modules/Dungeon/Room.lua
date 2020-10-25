@@ -66,8 +66,22 @@ function Room:SwapWith(otherRoom)
     otherRoom._paths = paths
 
     -- Rebuild the paths
-    self:_rebuildPaths()
-    otherRoom:_rebuildPaths()
+    local roomsToRebuild = { }
+    self:_rebuildPaths(roomsToRebuild)
+    otherRoom:_rebuildPaths(roomsToRebuild)
+
+    local rebuilt = {
+        [self] = true,
+        [otherRoom] = true
+    }
+    for _,room in pairs(roomsToRebuild) do
+        if rebuilt[room] then
+            continue
+        end
+
+        rebuilt[room] = true
+        room:Build()
+    end
 
     -- Rebuild the rooms
     self:Build()
@@ -147,8 +161,9 @@ function Room:_changePathsTo(otherRoom)
 end
 
 -- Rebuilds all paths connected to this room
-function Room:_rebuildPaths()
+function Room:_rebuildPaths(connectedRooms)
     for _,path in pairs(self._paths) do
+        table.insert(connectedRooms, path:GetOtherRoom(self))
         path:Build()
     end
 end
