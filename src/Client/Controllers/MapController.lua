@@ -92,6 +92,9 @@ function MapController:Build()
     for _,room in pairs(Rooms) do
         room:Build()
     end
+
+    -- Step 5) Reload players
+    self.Services.MapService:ReloadPlayers()
 end
 
 function MapController:OnViewModeChanged()

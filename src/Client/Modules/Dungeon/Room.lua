@@ -4,6 +4,7 @@
     Every room has a RoomType and this determines the type of room that gets placed.
 ]]
 local DungeonSettings
+local SpawnService
 
 local Room = { }
 Room.__index = Room
@@ -28,6 +29,7 @@ end
 
 function Room:Init()
     DungeonSettings = self.Shared.DungeonSettings
+    SpawnService = self.Services.SpawnService
 end
 
 function Room:GetPosition()
@@ -107,7 +109,7 @@ function Room:Build()
     workspace.Terrain:FillRegion(self._regions.Air, 4, Enum.Material.Air)
     workspace.Terrain:FillRegion(self._regions.Floor, 4, material)
 
-    if self._roomType.CanSwap or self._roomType.EffectType then
+    if self._roomType.CanSwap or self._roomType.EffectType or self._roomType.IsSpawn then
         if self._part then
             return
         end
@@ -125,6 +127,9 @@ function Room:Build()
 
         if self._roomType.EffectType then
             p.Touched:Connect(function(hit) self:_onTouch(hit) end)
+        end
+        if self._roomType.IsSpawn then
+            SpawnService:SetSpawnLocation(p.Position, true)
         end
 
         -- If it has a decal, give it the decal

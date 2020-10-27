@@ -13,7 +13,8 @@ return {
         Start = {
             Material = nil, -- sets it to use the default
             EffectType = nil,
-            CanSwap = false
+            CanSwap = false,
+            IsSpawn = true
         },
         Goal = {
             Material = nil, -- sets it to use the default

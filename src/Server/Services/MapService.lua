@@ -10,7 +10,6 @@
 local MapService = {Client = {}}
 print("MapService required")
 
-local DungeonSettings
 local MapLoader
 
 function MapService:Start()
@@ -19,11 +18,17 @@ end
 
 
 function MapService:Init()
-    DungeonSettings = self.Shared.DungeonSettings
     MapLoader = self.Modules.MapLoader
 
     self:CacheClientMethod("GetLayout")
     self:RegisterClientEvent("SwapParts")
+end
+
+-- Reloads all players
+function MapService:ReloadPlayers()
+    for _,p in pairs(game.Players:GetPlayers()) do
+        p:LoadCharacter()
+    end
 end
 
 -- Swaps around two positions on the grid.
@@ -73,5 +78,9 @@ function MapService.Client:GetLayout()
     return MapLoader.LoadLevel(1)
 end
 
+-- Reload players
+function MapService.Client:ReloadPlayers()
+    self.Server:ReloadPlayers()
+end
 
 return MapService
