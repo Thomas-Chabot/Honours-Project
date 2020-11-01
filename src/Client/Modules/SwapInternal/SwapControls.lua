@@ -29,7 +29,11 @@ local function moveTo(part, position, connectedPlayers)
             continue
         end
 
-        primaryPart.CFrame = CFrame.new(primaryPart.Position - part.Position + position)
+        local target = game.Players:GetPlayerFromCharacter(player) and
+                        part.Position + Vector3.new(0, 5, 0) or -- If it's a player, move to the center of the part they're standing on
+                        primaryPart.Position - part.Position + position -- Otherwise, we want them to move with the part
+                        
+        primaryPart.CFrame = CFrame.new(target)
     end
     part.Position = position
 end
