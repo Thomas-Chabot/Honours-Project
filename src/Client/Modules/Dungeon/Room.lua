@@ -32,6 +32,10 @@ function Room:Init()
     SpawnService = self.Services.SpawnService
 end
 
+function Room:Destroy()
+    --self:Unload()
+end
+
 function Room:GetPosition()
     return self._position
 end
@@ -183,7 +187,7 @@ function Room:_onTouch(hit)
         local effect = DungeonSettings.Effects[self._roomType.EffectType]
         assert(effect, "Could not find the effect for " .. tostring(self._roomType.EffectType))
 
-        effect(character)
+        effect(character, self)
     end
 
     wait()

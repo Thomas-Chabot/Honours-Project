@@ -23,6 +23,10 @@ function Path:Init()
     DungeonSettings = self.Shared.DungeonSettings
 end
 
+function Path:Destroy()
+    --self:Unload()
+end
+
 -- Checks if the path is bounded to the given room. Takes a Room object.
 function Path:IsInRoom(room)
     for _,r in pairs(self._rooms) do

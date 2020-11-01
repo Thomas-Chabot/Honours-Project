@@ -14,11 +14,12 @@ local SwappableParts = { }
 
 local CollectionService = game:GetService("CollectionService")
 
-local CameraController
+local CameraController, SwapController
 local DungeonSettings
 local Room
 local Path
 local Swap
+local Maid
 
 local Rooms
 local SwappablesFolder
@@ -46,13 +47,20 @@ end
 
 function MapController:Init()
     CameraController = self.Controllers.CameraController
+    SwapController = self.Controllers.SwapController
     DungeonSettings = self.Shared.DungeonSettings
     Room = self.Modules.Dungeon.Room
     Path = self.Modules.Dungeon.Path
     Swap = self.Controllers.SwapController
+    Maid = self.Shared.Maid.new()
 end
 
-function MapController:Build() 
+function MapController:Rebuild()
+    self:Clear()
+    self:Build()
+end
+
+function MapController:Build()
     Rooms = { }
 
     repeat
@@ -62,6 +70,7 @@ function MapController:Build()
     local folder = Instance.new("Folder")
     folder.Name = "Swappables"
     folder.Parent = workspace
+    Maid:GiveTask(folder)
 
     SwappablesFolder = folder
 
@@ -73,7 +82,10 @@ function MapController:Build()
 
     -- Step 2) Set up data for the rooms
     for _,roomData in pairs(data.Rooms) do
-        Rooms[roomData.Id] = Room.new(roomData)
+        local room = Room.new(roomData)
+        Maid:GiveTask(room)
+
+        Rooms[roomData.Id] = room
     end
 
     -- Step 3) Connect & Build paths
@@ -86,6 +98,8 @@ function MapController:Build()
 
         r1:AddPath(path)
         r2:AddPath(path)
+
+        Maid:GiveTask(path)
     end
 
     -- Step 4) Build the rooms
@@ -95,6 +109,14 @@ function MapController:Build()
 
     -- Step 5) Reload players
     self.Services.MapService:ReloadPlayers()
+
+    -- Step 6) Set up the swap controller
+    SwapController:Refresh()
+end
+
+function MapController:Clear()
+    Maid:DoCleaning()
+    Maid = self.Shared.Maid.new()
 end
 
 function MapController:OnViewModeChanged()

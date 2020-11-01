@@ -3,6 +3,7 @@
 ]]
 local maps = game.ServerStorage.Objects.Maps
 local levels = {
+	maps["Level-1"],
     maps["Level-2"]
 }
 
@@ -12,6 +13,18 @@ local colorRoomMap = {
 	[BrickColor.Blue().Name] = "Start",
 	[BrickColor.Green().Name] = "Goal"
 }
+
+local function getRoomData(room)
+	local roomType = colorRoomMap[room.BrickColor.Name]
+	assert(roomType, "Could not match the color " .. tostring(room.BrickColor) .. " to a room type")
+	
+	return {
+		Id = room.Name,
+		Position = room.Position,
+		Size = room.Size,
+		RoomType = roomType
+	}
+end
 
 local function getConnectingRooms(path)
 	return {
@@ -23,15 +36,7 @@ end
 local function getRooms(level)
 	local rooms = { }
 	for _,room in ipairs(level.Rooms:GetChildren()) do
-		local roomType = colorRoomMap[room.BrickColor.Name]
-		assert(roomType, "Could not match the color " .. tostring(room.BrickColor) .. " to a room type")
-		
-		table.insert(rooms, {
-			Id = room.Name,
-			Position = room.Position,
-			Size = room.Size,
-			RoomType = roomType
-		})
+		table.insert(rooms, getRoomData(room))
 	end
 	
 	return rooms
@@ -48,6 +53,14 @@ local function getPaths(level)
 	return paths
 end
 
+local function getGoal(level)
+	local levelModel = levels[level]
+	local goal = levelModel.Rooms:FindFirstChild("Goal")
+	assert(goal, "Could not find the goal for the level " .. tostring(level))
+
+	return getRoomData(goal)
+end
+
 local function loadMapData(map)
     return {
         Rooms = getRooms(map),
@@ -61,5 +74,6 @@ local loadMap = function (level)
 end
 
 return {
-    LoadLevel = loadMap
+	LoadLevel = loadMap,
+	GetGoal = getGoal
 }

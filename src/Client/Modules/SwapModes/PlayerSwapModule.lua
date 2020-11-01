@@ -42,14 +42,16 @@ local function Clone(part)
 
     return clone
 end
-
--- Starts up the module -- set up some constants
-function PlayerSwapModule:Start()
+local function setupRaycastData()
     SwappableObjectsFolder = workspace:WaitForChild("Swappables")
 
     RaycastData = RaycastParams.new()
     RaycastData.FilterType = Enum.RaycastFilterType.Whitelist
     RaycastData.FilterDescendantsInstances = {SwappableObjectsFolder}
+end
+
+-- Starts up the module -- set up some constants
+function PlayerSwapModule:Start()
 end
 
 -- Loads dependencies
@@ -62,6 +64,12 @@ function PlayerSwapModule:Init()
     DungeonSettings = self.Shared.DungeonSettings
 
     self.Swapped = self.Shared.Signal.new()
+end
+
+-- Refreshes the swap module, clearing all current swaps in progress.
+function PlayerSwapModule:Refresh()
+    setupRaycastData()
+    self:Release()
 end
 
 -- Activates the player swap module, hooks up events

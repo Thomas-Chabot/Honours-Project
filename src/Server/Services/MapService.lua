@@ -11,16 +11,15 @@ local MapService = {Client = {}}
 print("MapService required")
 
 local MapLoader
+local CurrentLevel
 
 function MapService:Start()
-
+    CurrentLevel = 1
 end
 
 
 function MapService:Init()
     MapLoader = self.Modules.MapLoader
-
-    self:CacheClientMethod("GetLayout")
     self:RegisterClientEvent("SwapParts")
 end
 
@@ -29,6 +28,37 @@ function MapService:ReloadPlayers()
     for _,p in pairs(game.Players:GetPlayers()) do
         p:LoadCharacter()
     end
+end
+
+function MapService:PlayerReachedGoal(player)
+    local goalData = MapLoader.GetGoal(CurrentLevel)
+    local playerRoot = player.Character and player.Character.PrimaryPart
+    if not playerRoot then
+        return false
+    end
+
+    -- Use a Region3 to detect if the player is standing over the goal 
+    local goalPosition = goalData.Position
+    local goalSize = goalData.Size
+    local min = goalPosition - goalSize/2 - Vector3.new(8,8,8)
+    local max = goalPosition + goalSize/2 + Vector3.new(8,8,8)
+
+    local region = Region3.new(Vector3.new(min.X, min.Y, min.Z), Vector3.new(max.X, max.Y + 50, max.Z)):ExpandToGrid(4)
+    local results = workspace:FindPartsInRegion3WithWhiteList(region, {playerRoot})
+    
+    return #results > 0
+end
+
+-- Responds to when a player reaches the goal.
+-- Verifies that the goal has been reached and moves them to the next level.
+function MapService:OnGoalReached(player)
+    if not self:PlayerReachedGoal(player) then
+        return false
+    end
+
+    print("SERVER: The player has reached the goal.")
+    CurrentLevel = CurrentLevel + 1
+    return true
 end
 
 -- Swaps around two positions on the grid.
@@ -41,46 +71,18 @@ end
 
 -- Returns the game layout.
 function MapService.Client:GetLayout()
-    --[[return {
-        Rooms = {
-            {
-                Id = "Start",
-                Position = Vector3.new(-17.5, 0.5, 17.5),
-                Size = Vector3.new(30, 1, 30),
-                RoomType = DungeonSettings.RoomTypes.Start
-            },
-            {
-                Id = "A",
-                Position = Vector3.new(23, 0.5, 69),
-                Size = Vector3.new(10, 1, 10),
-                RoomType = DungeonSettings.RoomTypes.Trap
-            },
-            {
-                Id = "B",
-                Position = Vector3.new(54, 0.5, -4),
-                Size = Vector3.new(30, 1, 30),
-                RoomType = DungeonSettings.RoomTypes.Safe
-            },
-            {
-                Id = "Goal",
-                Position = Vector3.new(78, 0.5, 104),
-                Size = Vector3.new(30, 1, 30),
-                RoomType = DungeonSettings.RoomTypes.Goal
-            }
-        },
-        Paths = {
-            {"A", "Goal"},
-            {"A", "B"},
-            {"Start", "A"}
-        }
-    }]]
-
-    return MapLoader.LoadLevel(1)
+    print("Loading level ", CurrentLevel)
+    return MapLoader.LoadLevel(CurrentLevel)
 end
 
 -- Reload players
 function MapService.Client:ReloadPlayers()
     self.Server:ReloadPlayers()
+end
+
+-- Advance to the next level
+function MapService.Client:GoalReached(player)
+    return self.Server:OnGoalReached(player)
 end
 
 return MapService

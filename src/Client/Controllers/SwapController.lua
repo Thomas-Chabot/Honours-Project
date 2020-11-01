@@ -117,10 +117,9 @@ return SwapController
 ]]
 
 local SwapController = { }
+local swapModule
 
 function SwapController:Start()
-    wait(3)
-    local swapModule
     if self.Controllers.DungeonMasterController:IsDungeonMaster() then
         swapModule = self.Modules.SwapModes.PlayerSwapModule
     else
@@ -136,6 +135,10 @@ end
 
 function SwapController:Init()
     self.Swapped = self.Shared.Signal.new()
+end
+
+function SwapController:Refresh()
+    swapModule:Refresh()
 end
 
 return SwapController

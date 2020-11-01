@@ -17,7 +17,6 @@ return {
             IsSpawn = true
         },
         Goal = {
-            Material = nil, -- sets it to use the default
             EffectType = "Goal",
             CanSwap = false,
             Material = Enum.Material.Grass
@@ -38,6 +37,12 @@ return {
 
     Effects = {
         Trap = function(char) char.Humanoid:TakeDamage(100) end,
-        Goal = function(char) print(char, " Has reached the goal") end
+        Goal = function(_, framework) 
+            local valid = framework.Services.MapService:GoalReached()
+            print("RESULT: ", valid)
+            if valid then
+                framework.Controllers.MapController:Rebuild()
+            end
+        end
     }
 }

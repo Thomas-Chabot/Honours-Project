@@ -24,6 +24,11 @@ function ServerSwapModule:Init()
     self.Swapped = self.Shared.Signal.new()
 end
 
+-- Refresh the module
+function ServerSwapModule:Refresh()
+
+end
+
 -- Activates the module. Adds event listeners for the server.
 function ServerSwapModule:Activate()
     maid = Maid.new()
